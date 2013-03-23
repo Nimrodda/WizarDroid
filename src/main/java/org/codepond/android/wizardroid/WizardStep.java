@@ -6,11 +6,15 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+/**
+ * Base class for a wizard's step.
+ * As with regular {@link Fragment} each inherited class must have an empty constructor.
+ */
 public abstract class WizardStep extends Fragment {
 	private static final String TAG = "WizardStep";
 
-	static interface OnStepDoneListener {
-		void onStepDone(WizardStep step); 
+	static interface OnStepStateChangedListener {
+		void onStepStateChanged(WizardStep step); 
 	}
 
 	static final int STATE_PENDING 	= 0;
@@ -19,11 +23,11 @@ public abstract class WizardStep extends Fragment {
 	static final int STATE_ABORTED 	= 3;
 	
 	private final String key = String.format("%s#WizardStepModel", getClass().getName());
-	private OnStepDoneListener onStepDoneListener;
+	private OnStepStateChangedListener onStepStateChangedListener;
 	private int state = STATE_PENDING;
 	
-	WizardStep setOnStepDoneListener(OnStepDoneListener onStepDoneListener) {
-		this.onStepDoneListener = onStepDoneListener;
+	WizardStep setOnStepDoneListener(OnStepStateChangedListener onStepStateChangedListener) {
+		this.onStepStateChangedListener = onStepStateChangedListener;
 		return this;
 	}
 	
@@ -33,43 +37,40 @@ public abstract class WizardStep extends Fragment {
 
 	void setState(int state) {
 		this.state = state;
+		onStepStateChangedListener.onStepStateChanged(this);
 	}
 
-	<T> WizardStep saveModel(T value) {
+	WizardStep saveModel(Parcelable value) {
 		Bundle args = new Bundle();
-		if (value instanceof String) {
-			args.putString(key, (String) value);
-		}
-		else if (value instanceof Parcelable){
-			args.putParcelable(key, (Parcelable) value);
-		}
-		else {
-			throw new IllegalArgumentException(String.format("Unable to set argument. The type %s is not supported.", value.getClass().getName()));
-		}
+		args.putParcelable(key, (Parcelable) value);
 		setArguments(args);
 		return this;
 	}
 	
-	public String getName() {
-		return getClass().getSimpleName();
-	}
-	
+	/**
+	 * Mark the step as 'Done' and proceed to the next step in the flow.
+	 */
 	public void done() {
-		state = STATE_COMPLETED;
-		onStepDoneListener.onStepDone(this);
+		setState(STATE_COMPLETED);
 	}
 	
+	/**
+	 * Mark the step as 'Aborted' and go back to previous step or activity.
+	 */
 	public void abort() {
-		state = STATE_ABORTED;
-		onStepDoneListener.onStepDone(this);
+		setState(STATE_ABORTED);
 	}
 	
+	/**
+	 * Event which is executed after the step's model had been loaded once it's initialized.
+	 * Use this event to wire your step's model. 
+	 * @param model the Parcelable model which was loaded. 
+	 */
 	public void onModelBound(Parcelable model) {
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
-		Log.v(TAG, String.format("Running step: %s", getStepDescription()));
 		super.onAttach(activity);
 		bindModel();
 	}
@@ -83,9 +84,5 @@ public abstract class WizardStep extends Fragment {
 			model = null;
 		}
 		onModelBound(model);
-	}
-
-	public String getStepDescription() {
-		throw new UnsupportedOperationException("You must override WizardStepFragment#getStepDescription()"); 
 	}
 }

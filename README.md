@@ -1,8 +1,9 @@
 WizarDroid
 ==========
 
-WizarDroid is an Android library for creating Wizard like Activities such as *Windows Setup Wizard*, *Step by Step* installation processes, etc.
-It is built on top of Android's Fragments which act as the Wizard's steps.
+WizarDroid is an Android library for creating Wizard like Activities such as Installation Wizard, 
+Step by Step processes, etc. It is built on top of Android's Fragments featuring Wizard state persistence 
+and simple API for controling the flow of your application. 
 
 Prereqiusits
 ------------
@@ -12,8 +13,8 @@ You need to make sure that your project is compatible with the following:
 1.	Minimum SDK is API level 9
 2.	Android's support library
 
-How it works?
--------------
+Getting started
+---------------
 
 The basic Wizard scenario:
 
@@ -99,7 +100,7 @@ The basic Wizard scenario:
 
 **3.	Steps Layout**
 
-**To make it simple, we will se the same layout and code for all the steps.**
+**To make it simple, we will use the same layout and code for all the steps.**
 
 **XML:**
 
