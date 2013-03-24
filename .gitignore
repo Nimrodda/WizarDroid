@@ -18,5 +18,5 @@ local.properties
 # Eclipse project files
 .classpath
 .project
-/target
+target/
 .settings
