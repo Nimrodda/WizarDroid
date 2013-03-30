@@ -23,7 +23,7 @@ The basic Wizard scenario:
 3.	Once you've got your Wizard's steps ready, override onSetup() in your WizardActivity and create a new WizardFlow
 4.	Last but not least, override onWizardDone() in your WizardActivity and do whatever you want to do once the Wizard reached the last step (typically, here you will call the activity's finish() method or return a result, etc.)
 
-**The following sample is available at [wizard-sample/](https://github.com/Nimrodda/WizarDroid/wizard-sample/)**
+**The following sample is available on [WizarDroid's Github repository](https://github.com/Nimrodda/WizarDroid/wizard-sample/)**
 
 **1.	The Activity's Layout**
 
@@ -189,20 +189,24 @@ Press the next button to go to the next step and press your phone's back button 
 **This is just a simple example of what you can do with WizarDroid.
 For more complex scenarios continue to the Advanced section.**
 
+
 Installation
 ------------
 
-1.	The easiest way is to add a Maven dependency like so:
+*    Maven
+
+Put the following in your pom.xml file under the dependencies element:
 
     <dependency>
-		<groupId>org.codepond.android.wizardroid</groupId>
-		<artifactId>wizardroid-core</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</dependency>
+        <groupId>org.codepond.android.wizardroid</groupId>
+        <artifactId>wizardroid-core</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
 
-2.	You can also download the latest release JAR and simply put it in your class path.
+*    Download the pre-compiled WizarDroid jar from [SourceForge](https://github.com/Nimrodda/WizarDroid/wiki/Introduction).
+*    Clone this GIT repository and build by yourself using Maven.
 
 License
 -------
 
-You may use WizarDroid under the terms of MIT License.
+You may use WizarDroid under the terms of [MIT License](https://github.com/Nimrodda/WizarDroid/LICENSE).
