@@ -19,9 +19,11 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		onSetup(flow);
+		Log.i(TAG, "Loading wizard data");
+        onSetup(flow);
 		if (flow == null) {
-			throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardActivity#onSetup and use WizardFlow.Builder to create the Wizard's flow followed by WizardActivity#super.onSetup(flow)");
+			throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardActivity#onSetup " + "" +
+                    "and use WizardFlow.Builder to create the Wizard's flow followed by WizardActivity#super.onSetup(flow)");
 		}
 		wizard = new Wizard(flow);
 		if (savedInstanceState != null) {
@@ -32,13 +34,15 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt(WIZARD_LAST_STEP, wizard.getCurrentStepId());
+		Log.v(TAG, "Persisting current wizard step ID");
+        outState.putInt(WIZARD_LAST_STEP, wizard.getCurrentStepId());
 	}
-	
+
 	//Handler for Back key pressed
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.v(TAG, "Going back one step");
 			wizard.getCurrentStep().abort();
 			return true;
 		}
@@ -49,7 +53,8 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	 * Fire when a step's state was changed.
 	 */
 	@Override
-	public void onStepStateChanged(WizardStep step) {
+	public final void onStepStateChanged(WizardStep step) {
+        Log.v(TAG, "Step state changed");
 		switch (step.getState()) {
 		case WizardStep.STATE_ABORTED:
 			stepAborted();
@@ -78,7 +83,8 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	public void onWizardDone() {
 	}
 
-	private void stepAborted() {
+ 	private void stepAborted() {
+        Log.v(TAG, "Step was aborted, going back one step");
 		if (wizard.isFirstStep()) {
 			finish();
 		}
@@ -88,19 +94,12 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	}
 	
 	private void stepCompleted() {
+        Log.v(TAG, "Step completed, proceeding to the next step");
 		if (!wizard.isLastStep()) {
 			wizard.next();
 		}
 		else {
 			onWizardDone();
 		}
-	}
-	
-	/**
-	 * Get current wizard's step.
-	 * @return the current active wizard's step represented by {@link WizardStep}
-	 */
-	public WizardStep getCurrentStep() {
-		return wizard.getCurrentStep();
 	}
 }
