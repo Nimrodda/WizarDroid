@@ -3,7 +3,7 @@
   package="org.codepond.android.wizardroid" android:versionCode="1" android:versionName="1.0-SNAPSHOT">
 
   <application android:icon="@drawable/icon" android:label="@string/app_name">
-    <activity android:name=".HelloWizardActivity">
+    <activity android:name=".MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

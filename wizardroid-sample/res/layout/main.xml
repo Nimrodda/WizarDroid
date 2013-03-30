@@ -11,17 +11,9 @@
             android:text="@string/hello"
             android:layout_gravity="center"/>
 
-    <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Tutorial Wizard"
-            android:onClick="onClick"
-            android:id="@+id/tutorialButton"/>
-
-    <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Interactive Wizard"
-            android:onClick="onClick"
-            android:id="@+id/interactiveButton"/>
+    <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    </ListView>
 </LinearLayout>
