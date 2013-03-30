@@ -18,3 +18,7 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+target/
+.settings
+.idea/
+*.iml

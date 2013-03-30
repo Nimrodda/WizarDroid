@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Choose a sample</string>
+    <string name="app_name">WizarDroid Samples</string>
+    <string name="title_tutorial_wizard">Tutorial Wizard</string>
+    <string name="title_interactive_wizard">Interactive Wizard</string>
+</resources>
