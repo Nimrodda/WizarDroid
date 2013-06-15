@@ -24,12 +24,13 @@ public class Wizard {
 		this.flow = wizardFlow;
 		this.fragmentContainerId = wizardFlow.getFragmentContainerId();
 		this.fragmentManager = flow.getContext().getSupportFragmentManager();
-		WizardStep step = (WizardStep) fragmentManager.findFragmentById(fragmentContainerId);
+		
+		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
+		WizardStep step = (WizardStep) fragmentManager.findFragmentByTag(currentStepTag);
 		if (step == null) {
-			fragmentManager.beginTransaction().add(fragmentContainerId, getCurrentStep()).commit();
+			fragmentManager.beginTransaction().add(fragmentContainerId, getCurrentStep(), currentStepTag).commit();
 			getCurrentStep().setState(WizardStep.STATE_RUNNING);
 		}
-		
 	}
 	
 	/**
@@ -37,7 +38,9 @@ public class Wizard {
 	 */
 	public void next() {
 		currentStep++;
-		fragmentManager.beginTransaction().replace(fragmentContainerId, getCurrentStep()).addToBackStack(null).commit();
+		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
+		fragmentManager.beginTransaction().replace(fragmentContainerId, getCurrentStep(), currentStepTag)
+				.addToBackStack(null).commit();
 		getCurrentStep().setState(WizardStep.STATE_RUNNING);
 	}
 	
