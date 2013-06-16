@@ -4,6 +4,7 @@ package org.codepond.android.wizardroid;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 
