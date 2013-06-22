@@ -4,6 +4,7 @@ package org.codepond.android.wizardroid;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 
@@ -45,6 +46,10 @@ public class WizardFlow {
 	 */
 	public FragmentActivity getContext() {
 		return context;
+	}
+
+	public static String getTagForWizardStep(int stepPosition, Class<? extends WizardStep> stepClass) {
+		return stepClass.getName() + "#" + stepPosition;
 	}
 
 	/**
@@ -91,30 +96,53 @@ public class WizardFlow {
 		}
 
 		/**
-		 * Add a step to the WizardFlow. Note that the wizard flow is determined by the order of added steps.
-		 * You must call {@link Wizard.Builder#setActivity} before adding a step to the flow.
-		 * @param step instance of {@link WizardStep}
+		 * Add a step to the WizardFlow. Note that the wizard flow is determined by the order of added steps. You must
+		 * call {@link Wizard.Builder#setActivity} before adding a step to the flow.
+		 * 
+		 * @param step
+		 *            The class of {@link WizardStep} to create (if necessary)
 		 * @return Builder for chaining set methods
 		 */
-		public Builder addStep(WizardStep step) {
+		public Builder addStep(Class<? extends WizardStep> stepClass) {
+			return addStep(stepClass, null, null);
+		}
+
+		/**
+		 * Add a step to the WizardFlow. Note that the wizard flow is determined by the order of added steps. You must
+		 * call {@link Wizard.Builder#setActivity} before adding a step to the flow.
+		 * 
+		 * @param step
+		 *            The class of {@link WizardStep} to create (if necessary)
+		 * @return Builder for chaining set methods
+		 */
+		public Builder addStep(Class<? extends WizardStep> stepClass, Bundle arguments, Parcelable model) {
 			if (activity == null) {
 				valid = false;
 				throw new RuntimeException("You must call WizardFlow.Builder#setActivity before adding a step");
 			}
+
+			// Check if fragment is present, if not, create it.
+			String tag = WizardFlow.getTagForWizardStep(wizardSteps.size(), stepClass);
+			WizardStep step = (WizardStep) activity.getSupportFragmentManager().findFragmentByTag(tag);
+
+			if (step == null) {
+				try {
+					step = stepClass.newInstance();
+					if (arguments != null) step.setArguments(arguments);
+					if (model != null) step.saveModel(model);
+				} catch (InstantiationException e) {
+					valid = false;
+					throw new RuntimeException("Failed to instanciate the step");
+				} catch (IllegalAccessException e) {
+					valid = false;
+					throw new RuntimeException("Failed to instanciate the step");
+				}
+			}
+
 			wizardSteps.add(step.setOnStepDoneListener(activity));
+
 			valid = true;
 			return this;
-		}
-		
-		/**
-		 * Add a step with model to the WizardFlow. Note that the wizard flow is determined by the order of added steps.
-		 * You must call {@link Wizard.Builder#setActivity} before adding a step to the flow.
-		 * @param step instance of {@link WizardStep}
-		 * @param model instance of {@link Parcelable} that will be associated to this step
-		 * @return Builder for chaining set methods
-		 */
-		public Builder addStep(WizardStep step, Parcelable model) {
-			return addStep(step.saveModel(model));
 		}
 		
 		/**

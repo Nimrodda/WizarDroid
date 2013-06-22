@@ -18,8 +18,8 @@ public class TutorialWizard extends WizardActivity {
         flow = new WizardFlow.Builder()
                 .setActivity(this)                      //First, set the hosting activity for the wizard
                 .setContainerId(R.id.step_container)    //then set the layout container for the steps.
-                .addStep(new TutorialStep1())           //Add your steps in the order you want them
-                .addStep(new TutorialStep2())           //to appear and eventually call create()
+                .addStep(TutorialStep1.class)           //Add your steps in the order you want them
+                .addStep(TutorialStep2.class)           //to appear and eventually call create()
                 .create();                              //to create the wizard flow.
 
         //Call the super method using the newly created flow
