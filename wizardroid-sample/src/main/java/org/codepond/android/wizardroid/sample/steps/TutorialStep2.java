@@ -1,4 +1,4 @@
-package org.codepond.android.steps;
+package org.codepond.android.wizardroid.sample.steps;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,10 +19,10 @@ public class TutorialStep2 extends WizardStep implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.tutorial_step, container, false);
+        View v = inflater.inflate(R.layout.step_tutorial, container, false);
         TextView tv = (TextView) v.findViewById(R.id.textView);
-        tv.setText("This is an example of Step 2 and also the last tutorial_step in this wizard. " +
-                "By clicking Next you will go back to the main activity. Hit your phone back button to go back to the previous tutorial_step");
+        tv.setText("This is an example of Step 2 and also the last step in this wizard. " +
+                "By clicking Next you will go back to the main activity. Hit your phone back button to go back to the previous step");
         //Set listener for 'Next' button click
         //Note that we are setting OnClickListener using getActivity() because
         //the 'Next' button is actually part of the hosting activity's layout and
@@ -39,7 +39,7 @@ public class TutorialStep2 extends WizardStep implements View.OnClickListener {
         //Do some work
         //...
 
-        //And call done() to signal that the tutorial_step is completed successfully
+        //And call done() to signal that the step is completed successfully
         done();
     }
 }
