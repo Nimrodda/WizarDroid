@@ -14,8 +14,6 @@ import org.codepond.android.wizardroid.WizardStep;
 
 public class FormStep2 extends WizardStep implements View.OnClickListener {
 
-    //public FormWizardContext mForm;
-
     @ContextVariable
     private String firstname;
     @ContextVariable
