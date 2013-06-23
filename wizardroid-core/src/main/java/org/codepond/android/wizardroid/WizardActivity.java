@@ -12,10 +12,11 @@ import android.view.KeyEvent;
  */
 public abstract class WizardActivity extends FragmentActivity implements WizardStep.OnStepStateChangedListener {
 	private static final String TAG = "WizardActivity";
-	private static final String WIZARD_LAST_STEP = WizardActivity.class.getName() + "#WIZARD_LAST_STEP";
-	private WizardFlow flow;
+	private static final String STATE_WIZARD_LAST_STEP = WizardActivity.class.getName() + "#STATE_WIZARD_LAST_STEP";
+    private static final String STATE_WIZARD_CONTEXT = "ContextVariable";
+    private WizardFlow flow;
 	private Wizard wizard;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,7 +28,8 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 		}
 		wizard = new Wizard(flow);
 		if (savedInstanceState != null) {
-			wizard.setCurrentStep(savedInstanceState.getInt(WIZARD_LAST_STEP));
+            wizard.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
+			wizard.setCurrentStep(savedInstanceState.getInt(STATE_WIZARD_LAST_STEP));
 		}
 	}
 
@@ -35,7 +37,8 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.v(TAG, "Persisting current wizard step ID");
-        outState.putInt(WIZARD_LAST_STEP, wizard.getCurrentStepId());
+        outState.putInt(STATE_WIZARD_LAST_STEP, wizard.getCurrentStepPosition());
+        outState.putBundle(STATE_WIZARD_CONTEXT, wizard.getContext());
 	}
 
 	//Handler for Back key pressed

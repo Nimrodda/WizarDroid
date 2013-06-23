@@ -1,7 +1,9 @@
 package org.codepond.android.wizardroid;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+
+import java.lang.reflect.Field;
 
 /**
  * Class to control the wizard flow. Normally you will want to use WizardActivity 
@@ -15,8 +17,11 @@ public class Wizard {
 	private final FragmentManager fragmentManager;
 	private final WizardFlow flow;
 	private final int fragmentContainerId;
-	
-	/**
+
+    private Bundle context;
+
+
+    /**
 	 * Constructor for Wizard
 	 * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
 	 */
@@ -24,27 +29,31 @@ public class Wizard {
 		this.flow = wizardFlow;
 		this.fragmentContainerId = wizardFlow.getFragmentContainerId();
 		this.fragmentManager = flow.getContext().getSupportFragmentManager();
-		
+		this.context = new Bundle();
+
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
 		WizardStep step = (WizardStep) fragmentManager.findFragmentByTag(currentStepTag);
 		if (step == null) {
 			fragmentManager.beginTransaction().add(fragmentContainerId, getCurrentStep(), currentStepTag).commit();
 			getCurrentStep().setState(WizardStep.STATE_RUNNING);
 		}
+		
 	}
 	
 	/**
 	 * Advance the wizard to the next step
 	 */
 	public void next() {
+        persistStepContext();
 		currentStep++;
+        passStepContext();
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
 		fragmentManager.beginTransaction().replace(fragmentContainerId, getCurrentStep(), currentStepTag)
 				.addToBackStack(null).commit();
 		getCurrentStep().setState(WizardStep.STATE_RUNNING);
 	}
-	
-	/**
+
+    /**
 	 * Takes the wizard one step back
 	 */
 	public void back() {
@@ -63,10 +72,10 @@ public class Wizard {
 	}
 	
 	/**
-	 * Gets the current step ID
+	 * Gets the current step position
 	 * @return integer representing the position of the step in the WizardFlow
 	 */
-	public int getCurrentStepId() {
+	public int getCurrentStepPosition() {
 		return currentStep;
 	}
 	
@@ -79,13 +88,13 @@ public class Wizard {
 	}
 	
 	/**
-	 * Gets the step at specific ID
-	 * @param id the position of the step within the WizardFlow
+	 * Gets the step at specific position
+	 * @param position the position of the step within the WizardFlow
 	 * @return WizardStep the instance of WizardStep in the required position
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public WizardStep getStepAtId(int id) throws ArrayIndexOutOfBoundsException {
-		return flow.getSteps().get(id);
+	public WizardStep getStepAtPosition(int position) throws ArrayIndexOutOfBoundsException {
+		return flow.getSteps().get(position);
 	}
 	
 	/**
@@ -103,4 +112,60 @@ public class Wizard {
 	public boolean isFirstStep() {
 		return currentStep == 0;
 	}
+
+    Bundle getContext() {
+        return context;
+    }
+
+    void setContext(Bundle context) {
+        this.context = context;
+    }
+
+    private void passStepContext() {
+        Field[] fields = getCurrentStep().getClass().getDeclaredFields();
+        //Check if arguments were already set on setup, otherwise creates a new bundle
+        Bundle args = getCurrentStep().getArguments();
+        if (args == null) {
+            args = new Bundle();
+        }
+        //Scan the step for fields annotaed with @ContextVariable and check if there is a value stored in the Wizard Context for the field name
+        for (Field field : fields) {
+            if (field.getAnnotation(ContextVariable.class) != null && context.containsKey(field.getName())) {
+                field.setAccessible(true);
+                //Found a value for the annotated field, adding it to the step's argument for later binding
+                if (field.getType() == String.class) {
+                    args.putString(field.getName(), context.getString(field.getName()));
+                }
+                else if (field.getType() == Integer.class) {
+                    args.putInt(field.getName(), context.getInt(field.getName()));
+                }
+                //TODO: Add more types
+            }
+        }
+        getCurrentStep().setArguments(args);
+    }
+
+    private void persistStepContext() {
+        //Scan the step for fields annotaed with @ContextVariable
+        Field[] fields = getCurrentStep().getClass().getDeclaredFields();
+        for (Field field : fields) {
+            ContextVariable contextVar = field.getAnnotation(ContextVariable.class);
+            if (contextVar != null) {
+                //Store its value in the Wizard Context
+                field.setAccessible(true);
+                try {
+                    if (field.getType() == String.class) {
+                        context.putString(field.getName(), (String)field.get(getCurrentStep()));
+                    }
+                    else if (field.getType() == Integer.class) {
+                        context.putInt(field.getName(), (Integer) field.get(getCurrentStep()));
+                    }
+                    //TODO: Add more types
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
