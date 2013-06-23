@@ -3,5 +3,9 @@
     <string name="hello">Choose a sample</string>
     <string name="app_name">WizarDroid Samples</string>
     <string name="title_tutorial_wizard">Tutorial Wizard</string>
-    <string name="title_interactive_wizard">Interactive Wizard</string>
+    <string name="title_form_wizard">Form Wizard</string>
+    <string name="hint_firstname">Enter your firstname</string>
+    <string name="hint_lastname">Enter your lastname</string>
+    <string name="sample_form_text">This example shows you how you can have a form in multiple steps. Fill up the form and hit Next.</string>
+    <string name="sample_form_summary">Here is a summary of what you have entered in the previous step:</string>
 </resources>

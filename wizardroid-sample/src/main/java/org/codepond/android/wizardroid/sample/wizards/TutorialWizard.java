@@ -1,8 +1,11 @@
-package org.codepond.android.wizardroid;
+package org.codepond.android.wizardroid.sample.wizards;
 
 import android.os.Bundle;
-import org.codepond.android.steps.TutorialStep1;
-import org.codepond.android.steps.TutorialStep2;
+import org.codepond.android.wizardroid.sample.steps.TutorialStep1;
+import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
+import org.codepond.android.wizardroid.R;
+import org.codepond.android.wizardroid.WizardActivity;
+import org.codepond.android.wizardroid.WizardFlow;
 
 public class TutorialWizard extends WizardActivity {
 
@@ -18,8 +21,8 @@ public class TutorialWizard extends WizardActivity {
         flow = new WizardFlow.Builder()
                 .setActivity(this)                      //First, set the hosting activity for the wizard
                 .setContainerId(R.id.step_container)    //then set the layout container for the steps.
-                .addStep(new TutorialStep1())           //Add your steps in the order you want them
-                .addStep(new TutorialStep2())           //to appear and eventually call create()
+                .addStep(TutorialStep1.class)           //Add your steps in the order you want them
+                .addStep(TutorialStep2.class)           //to appear and eventually call create()
                 .create();                              //to create the wizard flow.
 
         //Call the super method using the newly created flow

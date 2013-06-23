@@ -71,8 +71,8 @@ Take a quick tour or head directly to the [Wiki](https://github.com/Nimrodda/Wiz
             flow = new WizardFlow.Builder()
                     .setActivity(this)                      //First, set the hosting activity for the wizard
                     .setContainerId(R.id.step_container)    //then set the layout container for the steps.
-                    .addStep(new Step1())                   //Add your steps in the order you want them
-                    .addStep(new Step2())                   //to appear and eventually call create()
+                    .addStep(TutorialStep1.class)                   //Add your steps in the order you want them
+                    .addStep(TutorialStep2.class)                   //to appear and eventually call create()
                     .create();                              //to create the wizard flow.
 
             //Call the super method using the newly created flow
@@ -178,7 +178,7 @@ Take a quick tour or head directly to the [Wiki](https://github.com/Nimrodda/Wiz
             //Do some work
             //...
 
-            //And call done() to signal that the tutorial_step is completed successfully
+            //And call done() to signal that the tutorial step is completed successfully
             done();
         }
     }
@@ -201,6 +201,7 @@ Installation
         <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
+<<<<<<< HEAD
 *    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid/)
 *    Build from [source]((https://github.com/Nimrodda/WizarDroid/).
 
@@ -210,6 +211,10 @@ Build
 The easiest way is to build the project with Maven by running 'mvn clean install'. 
 Otherwise just import the project to IntelliJ or Eclipse and build.
 
+=======
+*    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid).
+*    Clone this GIT repository and build by yourself using Maven.
+>>>>>>> sample
 
 License
 -------

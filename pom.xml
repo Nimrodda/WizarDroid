@@ -3,12 +3,33 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>org.codepond.android.wizardroid</groupId>
 	<artifactId>wizardroid-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	
 	<name>WizarDroid - Parent</name>
-
+	<description>Lightweight Android library for creating wizard activities</description>
+	<url>http://www.codepond.org</url>
+	<licenses>
+		<license>
+		  <name>The MIT License (MIT)</name>
+		  <url>https://raw.github.com/Nimrodda/WizarDroid/master/license</url>
+		  <distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<url>http://www.github.com/nimrodda/wizardroid</url>
+		<connection>scm:git:git://github.com/Nimrodda/WizarDroid.git</connection>
+		<developerConnection>scm:git:git@github.com:Nimrodda/WizarDroid.git</developerConnection>
+	</scm>
+	
 	<properties>
 		<platform.version>4.1.1.4</platform.version>
 		<platform.level>16</platform.level>

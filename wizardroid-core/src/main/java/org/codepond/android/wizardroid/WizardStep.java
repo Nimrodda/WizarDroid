@@ -2,9 +2,9 @@ package org.codepond.android.wizardroid;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+
+import java.lang.reflect.Field;
 
 /**
  * Base class for a wizard's step.
@@ -13,8 +13,8 @@ import android.util.Log;
 public abstract class WizardStep extends Fragment {
 	private static final String TAG = "WizardStep";
 
-	static interface OnStepStateChangedListener {
-		void onStepStateChanged(WizardStep step); 
+    static interface OnStepStateChangedListener {
+		void onStepStateChanged(WizardStep step);
 	}
 
 	static final int STATE_PENDING 	= 0;
@@ -22,13 +22,50 @@ public abstract class WizardStep extends Fragment {
 	static final int STATE_COMPLETED = 2;
 	static final int STATE_ABORTED 	= 3;
 	
-	private final String key = String.format("%s#WizardStepModel", getClass().getName());
 	private OnStepStateChangedListener onStepStateChangedListener;
-	private int state = STATE_PENDING;
-	
-	WizardStep setOnStepDoneListener(OnStepStateChangedListener onStepStateChangedListener) {
+	private int state = STATE_PENDING; //Default state for all steps
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Bundle args = getArguments();
+        if (args != null) {
+            bindFields(args);
+        }
+    }
+
+    private void bindFields(Bundle args) {
+        //Scan the step for fields annotaed with @ContextVariable
+        //and bind value if found in step's arguments
+        Field[] fields = this.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(ContextVariable.class) != null && args.containsKey(field.getName())) {
+                field.setAccessible(true);
+                try {
+                    field.set(this, args.get(field.getName()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Mark the step as 'Done' and proceed to the next step in the flow.
+     */
+    public final void done() {
+        setState(STATE_COMPLETED);
+    }
+
+    /**
+     * Mark the step as 'Aborted' and go back to previous step or activity.
+     */
+    public final void abort() {
+        setState(STATE_ABORTED);
+    }
+
+    void setOnStepChangedListener(OnStepStateChangedListener onStepStateChangedListener) {
 		this.onStepStateChangedListener = onStepStateChangedListener;
-		return this;
 	}
 	
 	int getState() {
@@ -38,51 +75,5 @@ public abstract class WizardStep extends Fragment {
 	void setState(int state) {
 		this.state = state;
 		onStepStateChangedListener.onStepStateChanged(this);
-	}
-
-	WizardStep saveModel(Parcelable value) {
-		Bundle args = new Bundle();
-		args.putParcelable(key, (Parcelable) value);
-		setArguments(args);
-		return this;
-	}
-	
-	/**
-	 * Mark the step as 'Done' and proceed to the next step in the flow.
-	 */
-	public void done() {
-		setState(STATE_COMPLETED);
-	}
-	
-	/**
-	 * Mark the step as 'Aborted' and go back to previous step or activity.
-	 */
-	public void abort() {
-		setState(STATE_ABORTED);
-	}
-	
-	/**
-	 * Event which is executed after the step's model had been loaded once it's initialized.
-	 * Use this event to wire your step's model. 
-	 * @param model the Parcelable model which was loaded. 
-	 */
-	public void onModelBound(Parcelable model) {
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		bindModel();
-	}
-
-	private void bindModel() {
-		Parcelable model;
-		try {
-			model = getArguments().getParcelable(key);
-		}
-		catch (NullPointerException e) {
-			model = null;
-		}
-		onModelBound(model);
 	}
 }

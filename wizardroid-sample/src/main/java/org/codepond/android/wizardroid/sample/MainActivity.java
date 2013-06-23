@@ -1,4 +1,4 @@
-package org.codepond.android.wizardroid;
+package org.codepond.android.wizardroid.sample;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import org.codepond.android.wizardroid.R;
+import org.codepond.android.wizardroid.sample.wizards.FormWizard;
+import org.codepond.android.wizardroid.sample.wizards.TutorialWizard;
 
 /**
  * The launchpad activity for this sample project. This activity launches other activities that
@@ -45,7 +48,8 @@ public class MainActivity extends ListActivity {
 
         // Instantiate the list of samples.
         mSamples = new Sample[] {
-                new Sample(R.string.title_tutorial_wizard, TutorialWizard.class)
+                new Sample(R.string.title_tutorial_wizard, TutorialWizard.class),
+                new Sample(R.string.title_form_wizard, FormWizard.class)
         };
 
         setListAdapter(new ArrayAdapter<Sample>(this,
