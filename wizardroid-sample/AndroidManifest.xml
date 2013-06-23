@@ -4,13 +4,14 @@
   
   <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="17" />
   <application android:icon="@drawable/icon" android:label="@string/app_name">
-    <activity android:name=".MainActivity">
+    <activity android:name=".sample.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-      <activity android:name=".TutorialWizard"/>
+      <activity android:name=".sample.wizards.TutorialWizard"/>
+      <activity android:name=".sample.wizards.FormWizard"/>
   </application>
 
 </manifest>
