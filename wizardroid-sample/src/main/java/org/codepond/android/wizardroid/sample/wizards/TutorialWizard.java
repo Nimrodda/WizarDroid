@@ -1,8 +1,11 @@
-package org.codepond.android.wizardroid;
+package org.codepond.android.wizardroid.sample.wizards;
 
 import android.os.Bundle;
-import org.codepond.android.steps.TutorialStep1;
-import org.codepond.android.steps.TutorialStep2;
+import org.codepond.android.wizardroid.sample.steps.TutorialStep1;
+import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
+import org.codepond.android.wizardroid.R;
+import org.codepond.android.wizardroid.WizardActivity;
+import org.codepond.android.wizardroid.WizardFlow;
 
 public class TutorialWizard extends WizardActivity {
 
