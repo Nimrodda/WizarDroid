@@ -1,8 +1,10 @@
 package org.codepond.android.wizardroid;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 
 /**
@@ -139,7 +141,34 @@ public class Wizard {
                 else if (field.getType() == Integer.class) {
                     args.putInt(field.getName(), context.getInt(field.getName()));
                 }
-                //TODO: Add more types
+                else if (field.getType() == Boolean.class) {
+                    args.putBoolean(field.getName(), context.getBoolean(field.getName()));
+                }
+                else if (field.getType() == Double.class) {
+                    args.putDouble(field.getName(), context.getDouble(field.getName()));
+                }
+                else if (field.getType() == Float.class) {
+                    args.putFloat(field.getName(), context.getFloat(field.getName()));
+                }
+                else if (field.getType() == Short.class) {
+                    args.putShort(field.getName(), context.getShort(field.getName()));
+                }
+                else if (field.getType() == Byte.class) {
+                    args.putByte(field.getName(), context.getByte(field.getName()));
+                }
+                else if (field.getType() == Long.class) {
+                    args.putLong(field.getName(), context.getLong(field.getName()));
+                }
+                else if (field.getType() == Character.class) {
+                    args.putChar(field.getName(), context.getChar(field.getName()));
+                }
+                else if (field.getType() == Parcelable.class) {
+                    args.putParcelable(field.getName(), context.getParcelable(field.getName()));
+                }
+                else if (field.getType() instanceof Serializable) {
+                    args.putSerializable(field.getName(), context.getSerializable(field.getName()));
+                }
+                //TODO: Add support for arrays
             }
         }
         getCurrentStep().setArguments(args);
@@ -155,12 +184,39 @@ public class Wizard {
                 field.setAccessible(true);
                 try {
                     if (field.getType() == String.class) {
-                        context.putString(field.getName(), (String)field.get(getCurrentStep()));
+                        context.putString(field.getName(), (String) field.get(getCurrentStep()));
                     }
                     else if (field.getType() == Integer.class) {
-                        context.putInt(field.getName(), (Integer) field.get(getCurrentStep()));
+                        context.putInt(field.getName(), field.getInt(getCurrentStep()));
                     }
-                    //TODO: Add more types
+                    else if (field.getType() == Boolean.class) {
+                        context.putBoolean(field.getName(), field.getBoolean(field.getName()));
+                    }
+                    else if (field.getType() == Double.class) {
+                        context.putDouble(field.getName(), field.getDouble(field.getName()));
+                    }
+                    else if (field.getType() == Float.class) {
+                        context.putFloat(field.getName(), field.getFloat(field.getName()));
+                    }
+                    else if (field.getType() == Short.class) {
+                        context.putShort(field.getName(), field.getShort(field.getName()));
+                    }
+                    else if (field.getType() == Byte.class) {
+                        context.putByte(field.getName(), field.getByte(field.getName()));
+                    }
+                    else if (field.getType() == Long.class) {
+                        context.putLong(field.getName(), field.getLong(field.getName()));
+                    }
+                    else if (field.getType() == Character.class) {
+                        context.putChar(field.getName(), field.getChar(field.getName()));
+                    }
+                    else if (field.getType() == Parcelable.class) {
+                        context.putParcelable(field.getName(), (Parcelable) field.get(field.getName()));
+                    }
+                    else if (field.getType() instanceof Serializable) {
+                        context.putSerializable(field.getName(), (Serializable) field.get(field.getName()));
+                    }
+                    //TODO: Add support for arrays
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
