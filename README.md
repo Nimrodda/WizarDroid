@@ -201,7 +201,6 @@ Installation
         <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
-<<<<<<< HEAD
 *    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid/)
 *    Build from [source]((https://github.com/Nimrodda/WizarDroid/).
 
@@ -210,11 +209,6 @@ Build
 
 The easiest way is to build the project with Maven by running 'mvn clean install'. 
 Otherwise just import the project to IntelliJ or Eclipse and build.
-
-=======
-*    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid).
-*    Clone this GIT repository and build by yourself using Maven.
->>>>>>> sample
 
 License
 -------
