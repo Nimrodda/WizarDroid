@@ -21,13 +21,11 @@ public class FormWizard extends WizardActivity {
     //using WizardFlow.Builder as shown in this example
     @Override
     public void onSetup(WizardFlow flow) {
-        Bundle args = new Bundle();
-        args.putString("init", "Initial args set");
         flow = new WizardFlow.Builder()
                 .setActivity(this)                              //First, set the hosting activity for the wizard
                 .setContainerId(R.id.step_container)            //then set the layout container for the steps.
                 .addStep(FormStep1.class)                       //Add your steps in the order you want them
-                .addStep(FormStep2.class, args)                       //to appear and eventually call create()
+                .addStep(FormStep2.class)                       //to appear and eventually call create()
                 .create();                                      //to create the wizard flow.
 
         //Call the super method using the newly created flow

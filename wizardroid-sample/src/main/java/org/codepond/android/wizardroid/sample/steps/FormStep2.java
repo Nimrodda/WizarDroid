@@ -35,9 +35,6 @@ public class FormStep2 extends WizardStep implements View.OnClickListener {
         firstnameTv.setText(firstname);
         lastnameTv.setText(lastname);
 
-        String init = getArguments().getString("init");
-        Log.v("FormStep2", init);
-
         //Set listener for 'Next' button click
         //Note that we are setting OnClickListener using getActivity() because
         //the 'Next' button is actually part of the hosting activity's layout and
