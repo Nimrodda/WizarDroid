@@ -16,7 +16,7 @@ You need to make sure that your project is compatible with the following:
 Getting started
 ---------------
 
-Take a quick tour or head directly to the [Wiki](https://github.com/Nimrodda/WizarDroid/wiki/Introduction) for more info.
+Take a quick tour or head directly to the [Wiki](https://github.com/Nimrodda/WizarDroid/wiki/) for more info.
 
 1.	Create an Activity that inherits from WizardActivity
 2.	Create your Wizard's steps by inheriting from WizardStep
@@ -195,14 +195,16 @@ Installation
 
 *    Maven
 
+Put the following in your pom.xml file under the dependencies element:
+
     <dependency>
         <groupId>org.codepond.android.wizardroid</groupId>
         <artifactId>wizardroid-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
-*    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid/)
-*    Build from [source]((https://github.com/Nimrodda/WizarDroid/).
+*    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid/).
+*    Clone this GIT repository and build by yourself.
 
 Build
 -----
@@ -213,4 +215,4 @@ Otherwise just import the project to IntelliJ or Eclipse and build.
 License
 -------
 
-You may use WizarDroid under the terms of [MIT License](https://github.com/Nimrodda/WizarDroid/LICENSE).
+You may use WizarDroid under the terms of [MIT License](https://github.com/Nimrodda/WizarDroid/blob/master/license).
