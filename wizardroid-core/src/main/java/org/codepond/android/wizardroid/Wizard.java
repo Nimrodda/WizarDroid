@@ -190,31 +190,31 @@ public class Wizard {
                         context.putInt(field.getName(), field.getInt(getCurrentStep()));
                     }
                     else if (field.getType() == Boolean.class) {
-                        context.putBoolean(field.getName(), field.getBoolean(field.getName()));
+                        context.putBoolean(field.getName(), field.getBoolean(getCurrentStep()));
                     }
                     else if (field.getType() == Double.class) {
-                        context.putDouble(field.getName(), field.getDouble(field.getName()));
+                        context.putDouble(field.getName(), field.getDouble(getCurrentStep()));
                     }
                     else if (field.getType() == Float.class) {
-                        context.putFloat(field.getName(), field.getFloat(field.getName()));
+                        context.putFloat(field.getName(), field.getFloat(getCurrentStep()));
                     }
                     else if (field.getType() == Short.class) {
-                        context.putShort(field.getName(), field.getShort(field.getName()));
+                        context.putShort(field.getName(), field.getShort(getCurrentStep()));
                     }
                     else if (field.getType() == Byte.class) {
-                        context.putByte(field.getName(), field.getByte(field.getName()));
+                        context.putByte(field.getName(), field.getByte(getCurrentStep()));
                     }
                     else if (field.getType() == Long.class) {
-                        context.putLong(field.getName(), field.getLong(field.getName()));
+                        context.putLong(field.getName(), field.getLong(getCurrentStep()));
                     }
                     else if (field.getType() == Character.class) {
-                        context.putChar(field.getName(), field.getChar(field.getName()));
+                        context.putChar(field.getName(), field.getChar(getCurrentStep()));
                     }
                     else if (field.getType() == Parcelable.class) {
-                        context.putParcelable(field.getName(), (Parcelable) field.get(field.getName()));
+                        context.putParcelable(field.getName(), (Parcelable) field.get(getCurrentStep()));
                     }
                     else if (field.getType() instanceof Serializable) {
-                        context.putSerializable(field.getName(), (Serializable) field.get(field.getName()));
+                        context.putSerializable(field.getName(), (Serializable) field.get(getCurrentStep()));
                     }
                     //TODO: Add support for arrays
                 } catch (IllegalAccessException e) {
