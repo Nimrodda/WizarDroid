@@ -186,8 +186,7 @@ Take a quick tour or head directly to the [Wiki](https://github.com/Nimrodda/Wiz
 **That's it!** Run the application and see how it's working.
 Press the next button to go to the next step and press your phone's back button to go back one step.
 
-**This is just a simple example of what you can do with WizarDroid.
-For more complex scenarios continue to the Advanced section.**
+This is just a basic example. Continue to the wiki to [learn more](https://github.com/Nimrodda/WizarDroid/wiki/)
 
 
 Installation
