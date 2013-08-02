@@ -23,7 +23,7 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 		Log.i(TAG, "Loading wizard data");
         onSetup(flow);
 		if (flow == null) {
-			throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardActivity#onSetup " + "" +
+			throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardActivity#onSetup " +
                     "and use WizardFlow.Builder to create the Wizard's flow followed by WizardActivity#super.onSetup(flow)");
 		}
 		wizard = new Wizard(flow);

@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
  * The engine of the Wizard. This class is in charge of
@@ -29,7 +30,7 @@ class Wizard {
 	Wizard(WizardFlow wizardFlow) {
 		this.flow = wizardFlow;
 		this.fragmentContainerId = wizardFlow.getFragmentContainerId();
-		this.fragmentManager = flow.getContext().getSupportFragmentManager();
+		this.fragmentManager = flow.getFragmentManager();
 		this.context = new Bundle();
 
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
@@ -38,9 +39,9 @@ class Wizard {
 			fragmentManager.beginTransaction().add(fragmentContainerId, getCurrentStep(), currentStepTag).commit();
 			getCurrentStep().setState(WizardStep.STATE_RUNNING);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Advance the wizard to the next step
 	 */
@@ -155,7 +156,7 @@ class Wizard {
                 else if (field.getType() == Byte.class) {
                     args.putByte(field.getName(), context.getByte(field.getName()));
                 }
-                else if (field.getType() == Long.class) {
+                else if (field.getType() == Long.class || field.getType() == Date.class) {
                     args.putLong(field.getName(), context.getLong(field.getName()));
                 }
                 else if (field.getType() == Character.class) {
@@ -174,7 +175,7 @@ class Wizard {
     }
 
     private void persistStepContext() {
-        //Scan the step for fields annotaed with @ContextVariable
+        //Scan the step for fields annotated with @ContextVariable
         Field[] fields = getCurrentStep().getClass().getDeclaredFields();
         for (Field field : fields) {
             ContextVariable contextVar = field.getAnnotation(ContextVariable.class);
@@ -211,6 +212,9 @@ class Wizard {
                     }
                     else if (field.getType() == Parcelable.class) {
                         context.putParcelable(field.getName(), (Parcelable) field.get(getCurrentStep()));
+                    }
+                    else if (field.getType() == Date.class) {
+                        context.putLong(field.getName(), ((Date)field.get(getCurrentStep())).getTime());
                     }
                     else if (field.getType() instanceof Serializable) {
                         context.putSerializable(field.getName(), (Serializable) field.get(getCurrentStep()));

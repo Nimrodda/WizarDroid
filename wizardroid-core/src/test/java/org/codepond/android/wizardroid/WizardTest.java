@@ -1,8 +1,6 @@
 package org.codepond.android.wizardroid;
 
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +9,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.easymock.EasyMock.*;
@@ -25,13 +24,14 @@ public class WizardTest {
     private WizardFlow mockFlow;
     private List mockSteps;
     private FragmentActivity mockContext;
-    private WizardStep mockStep1;
-    private WizardStep mockStep2;
+    private TestStep mockStep1;
+    private TestStep mockStep2;
     private WizardStep.OnStepStateChangedListener mockStepStateChangedListener;
 
     @Before
     public void setUp() throws Exception {
         mockStep1 = new TestStep();
+        mockStep1.setTimestamp(new Date());
         mockStep2 = new TestStep();
         mockStepStateChangedListener = createMock(WizardStep.OnStepStateChangedListener.class);
         mockStepStateChangedListener.onStepStateChanged(anyObject(TestStep.class));
@@ -42,10 +42,10 @@ public class WizardTest {
         mockSteps.add(mockStep1);
         mockSteps.add(mockStep2);
         mockFlow = createMock("mockFlow", WizardFlow.class);
-        mockContext = Robolectric.buildActivity(FragmentActivity.class).create().get(); //createMock("mockContext", FragmentActivity.class);
+        mockContext = Robolectric.buildActivity(FragmentActivity.class).create().get();
 
         expect(mockFlow.getFragmentContainerId()).andReturn(1234);
-        expect(mockFlow.getContext()).andReturn(mockContext);
+        expect(mockFlow.getFragmentManager()).andReturn(mockContext.getSupportFragmentManager());
         expect(mockFlow.getSteps()).andReturn(mockSteps).anyTimes();
         replay(mockFlow);
 
@@ -59,7 +59,7 @@ public class WizardTest {
 
     @Test
     public void testNext_AdvanceOneStep_StepPositionIsOne() {
-        int expectedStepPosition = wizard.getCurrentStepPosition() + 1;
+        int expectedStepPosition = 1;
         wizard.next();
         assertEquals(String.format("expectedStepPosition should be 1, actual: %s", wizard.getCurrentStepPosition()),
                 expectedStepPosition, wizard.getCurrentStepPosition());

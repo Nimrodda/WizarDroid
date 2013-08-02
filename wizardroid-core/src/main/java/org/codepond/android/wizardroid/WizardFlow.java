@@ -6,6 +6,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 /**
  * WizardFlow holds information regarding the wizard's steps and flow.
@@ -43,8 +44,8 @@ public class WizardFlow {
 	 * Get the wizard activity context.
 	 * @return FragmentActivity the context of the wizard.
 	 */
-	public FragmentActivity getContext() {
-		return context;
+	public FragmentManager getFragmentManager() {
+		return context.getSupportFragmentManager();
 	}
 
 	public static String getTagForWizardStep(int stepPosition, Class<? extends WizardStep> stepClass) {
