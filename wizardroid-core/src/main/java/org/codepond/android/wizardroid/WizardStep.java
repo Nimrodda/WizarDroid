@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
  * Base class for a wizard's step.
@@ -42,7 +43,12 @@ public abstract class WizardStep extends Fragment {
             if (field.getAnnotation(ContextVariable.class) != null && args.containsKey(field.getName())) {
                 field.setAccessible(true);
                 try {
-                    field.set(this, args.get(field.getName()));
+                    if (field.getType() == Date.class) {
+                        field.set(this, new Date(args.getLong(field.getName())));
+                    }
+                    else {
+                        field.set(this, args.get(field.getName()));
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

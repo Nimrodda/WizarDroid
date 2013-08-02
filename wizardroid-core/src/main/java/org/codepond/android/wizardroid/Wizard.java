@@ -6,14 +6,14 @@ import android.support.v4.app.FragmentManager;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
- * Class to control the wizard flow. Normally you will want to use WizardActivity 
- * instead of using this class directly for a more managed and simple usage.
- * Use this class to enhance your WizardActivity or to compose your
- * own WizardActivity. 
+ * The engine of the Wizard. This class is in charge of
+ * the wizard's flow progression. It is used directly by
+ * {@link WizardActivity} to manage the wizard.
  */
-public class Wizard {
+class Wizard {
 	private static final String TAG = "Wizard";
 	private int currentStep;
 	private final FragmentManager fragmentManager;
@@ -27,10 +27,10 @@ public class Wizard {
 	 * Constructor for Wizard
 	 * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
 	 */
-	public Wizard(WizardFlow wizardFlow) {
+	Wizard(WizardFlow wizardFlow) {
 		this.flow = wizardFlow;
 		this.fragmentContainerId = wizardFlow.getFragmentContainerId();
-		this.fragmentManager = flow.getContext().getSupportFragmentManager();
+		this.fragmentManager = flow.getFragmentManager();
 		this.context = new Bundle();
 
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
@@ -39,13 +39,13 @@ public class Wizard {
 			fragmentManager.beginTransaction().add(fragmentContainerId, getCurrentStep(), currentStepTag).commit();
 			getCurrentStep().setState(WizardStep.STATE_RUNNING);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Advance the wizard to the next step
 	 */
-	public void next() {
+	void next() {
         persistStepContext();
 		currentStep++;
         passStepContext();
@@ -58,7 +58,7 @@ public class Wizard {
     /**
 	 * Takes the wizard one step back
 	 */
-	public void back() {
+	void back() {
 		getCurrentStep().setState(WizardStep.STATE_PENDING);
 		currentStep--;
 		fragmentManager.popBackStack();
@@ -69,7 +69,7 @@ public class Wizard {
 	 * Sets the current step of the wizard
 	 * @param stepId the position of the step within the WizardFlow
 	 */
-	public void setCurrentStep(int stepId) {
+	void setCurrentStep(int stepId) {
 		currentStep = stepId;
 	}
 	
@@ -77,7 +77,7 @@ public class Wizard {
 	 * Gets the current step position
 	 * @return integer representing the position of the step in the WizardFlow
 	 */
-	public int getCurrentStepPosition() {
+	int getCurrentStepPosition() {
 		return currentStep;
 	}
 	
@@ -85,7 +85,7 @@ public class Wizard {
 	 * Gets the current step
 	 * @return WizardStep the current WizardStep instance
 	 */
-	public WizardStep getCurrentStep() {
+	WizardStep getCurrentStep() {
 		return flow.getSteps().get(currentStep);
 	}
 	
@@ -95,7 +95,7 @@ public class Wizard {
 	 * @return WizardStep the instance of WizardStep in the required position
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public WizardStep getStepAtPosition(int position) throws ArrayIndexOutOfBoundsException {
+	WizardStep getStepAtPosition(int position) throws ArrayIndexOutOfBoundsException {
 		return flow.getSteps().get(position);
 	}
 	
@@ -103,7 +103,7 @@ public class Wizard {
 	 * Checks if the current step is the last step in the Wizard
 	 * @return boolean representing the result of the check
 	 */
-	public boolean isLastStep() {
+	boolean isLastStep() {
 		return currentStep == flow.getSteps().size() - 1;
 	}
 	
@@ -111,7 +111,7 @@ public class Wizard {
 	 * Checks if the step is the first step in the Wizard
 	 * @return boolean representing the result of the check
 	 */
-	public boolean isFirstStep() {
+	boolean isFirstStep() {
 		return currentStep == 0;
 	}
 
@@ -156,7 +156,7 @@ public class Wizard {
                 else if (field.getType() == Byte.class) {
                     args.putByte(field.getName(), context.getByte(field.getName()));
                 }
-                else if (field.getType() == Long.class) {
+                else if (field.getType() == Long.class || field.getType() == Date.class) {
                     args.putLong(field.getName(), context.getLong(field.getName()));
                 }
                 else if (field.getType() == Character.class) {
@@ -175,7 +175,7 @@ public class Wizard {
     }
 
     private void persistStepContext() {
-        //Scan the step for fields annotaed with @ContextVariable
+        //Scan the step for fields annotated with @ContextVariable
         Field[] fields = getCurrentStep().getClass().getDeclaredFields();
         for (Field field : fields) {
             ContextVariable contextVar = field.getAnnotation(ContextVariable.class);
@@ -212,6 +212,9 @@ public class Wizard {
                     }
                     else if (field.getType() == Parcelable.class) {
                         context.putParcelable(field.getName(), (Parcelable) field.get(getCurrentStep()));
+                    }
+                    else if (field.getType() == Date.class) {
+                        context.putLong(field.getName(), ((Date)field.get(getCurrentStep())).getTime());
                     }
                     else if (field.getType() instanceof Serializable) {
                         context.putSerializable(field.getName(), (Serializable) field.get(getCurrentStep()));
