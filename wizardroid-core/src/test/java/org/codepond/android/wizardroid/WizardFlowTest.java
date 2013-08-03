@@ -35,8 +35,8 @@ public class WizardFlowTest {
 
     }*/
 
-    @Test
-    public void testBuilder_Create_ThrowsRuntimeException() {
+    @Test(expected = RuntimeException.class)
+    public void testBuilder_CallingCreateWhenBuilderInvlid_ThrowsRuntimeException() {
         WizardFlow actualFlow = new WizardFlow.Builder().create();
 
 
