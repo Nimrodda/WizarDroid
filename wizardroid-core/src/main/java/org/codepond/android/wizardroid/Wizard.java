@@ -162,7 +162,7 @@ class Wizard {
                 else if (field.getType() == Character.class) {
                     args.putChar(field.getName(), context.getChar(field.getName()));
                 }
-                else if (field.getType() == Parcelable.class) {
+                else if (Parcelable.class.isAssignableFrom(field.getType())) {
                     args.putParcelable(field.getName(), context.getParcelable(field.getName()));
                 }
                 else if (field.getType() instanceof Serializable) {
@@ -210,7 +210,7 @@ class Wizard {
                     else if (field.getType() == Character.class) {
                         context.putChar(field.getName(), field.getChar(getCurrentStep()));
                     }
-                    else if (field.getType() == Parcelable.class) {
+                    else if (Parcelable.class.isAssignableFrom(field.getType())) {
                         context.putParcelable(field.getName(), (Parcelable) field.get(getCurrentStep()));
                     }
                     else if (field.getType() == Date.class) {
