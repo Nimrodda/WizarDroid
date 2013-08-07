@@ -1,6 +1,7 @@
 package org.codepond.android.wizardroid;
 
 import android.support.v4.app.FragmentActivity;
+import org.codepond.android.wizardroid.persistence.ContextManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +28,10 @@ public class WizardTest {
     private TestStep mockStep1;
     private TestStep mockStep2;
     private WizardStep.OnStepStateChangedListener mockStepStateChangedListener;
+    private ContextManager mockContextManager;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mockStep1 = new TestStep();
         mockStep1.setTimestamp(new Date());
         mockStep2 = new TestStep();
@@ -49,11 +51,15 @@ public class WizardTest {
         expect(mockFlow.getSteps()).andReturn(mockSteps).anyTimes();
         replay(mockFlow);
 
-        wizard = new Wizard(mockFlow);
+        mockContextManager = createMock(ContextManager.class);
+        mockContextManager.loadStepContext(anyObject(TestStep.class));
+        mockContextManager.persistStepContext(anyObject(TestStep.class));
+
+        wizard = new Wizard(mockFlow, mockContextManager);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
 
     }
 

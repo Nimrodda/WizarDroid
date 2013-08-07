@@ -1,12 +1,7 @@
 package org.codepond.android.wizardroid;
 
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Date;
+import org.codepond.android.wizardroid.persistence.ContextManager;
 
 /**
  * The engine of the Wizard. This class is in charge of
@@ -19,19 +14,18 @@ class Wizard {
 	private final FragmentManager fragmentManager;
 	private final WizardFlow flow;
 	private final int fragmentContainerId;
-
-    private Bundle context;
+    private final ContextManager contextManager;
 
 
     /**
 	 * Constructor for Wizard
 	 * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
 	 */
-	Wizard(WizardFlow wizardFlow) {
+	Wizard(WizardFlow wizardFlow, ContextManager contextManager) {
 		this.flow = wizardFlow;
+        this.contextManager = contextManager;
 		this.fragmentContainerId = wizardFlow.getFragmentContainerId();
 		this.fragmentManager = flow.getFragmentManager();
-		this.context = new Bundle();
 
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
 		WizardStep step = (WizardStep) fragmentManager.findFragmentByTag(currentStepTag);
@@ -46,9 +40,9 @@ class Wizard {
 	 * Advance the wizard to the next step
 	 */
 	void next() {
-        persistStepContext();
+        contextManager.persistStepContext(getCurrentStep());
 		currentStep++;
-        passStepContext();
+        contextManager.loadStepContext(getCurrentStep());
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
 		fragmentManager.beginTransaction().replace(fragmentContainerId, getCurrentStep(), currentStepTag)
 				.addToBackStack(null).commit();
@@ -114,117 +108,4 @@ class Wizard {
 	boolean isFirstStep() {
 		return currentStep == 0;
 	}
-
-    Bundle getContext() {
-        return context;
-    }
-
-    void setContext(Bundle context) {
-        this.context = context;
-    }
-
-    private void passStepContext() {
-        Field[] fields = getCurrentStep().getClass().getDeclaredFields();
-        //Check if arguments were already set on setup, otherwise creates a new bundle
-        Bundle args = getCurrentStep().getArguments();
-        if (args == null) {
-            args = new Bundle();
-        }
-        //Scan the step for fields annotaed with @ContextVariable and check if there is a value stored in the Wizard Context for the field name
-        for (Field field : fields) {
-            if (field.getAnnotation(ContextVariable.class) != null && context.containsKey(field.getName())) {
-                field.setAccessible(true);
-                //Found a value for the annotated field, adding it to the step's argument for later binding
-                if (field.getType() == String.class) {
-                    args.putString(field.getName(), context.getString(field.getName()));
-                }
-                else if (field.getType() == Integer.class) {
-                    args.putInt(field.getName(), context.getInt(field.getName()));
-                }
-                else if (field.getType() == Boolean.class) {
-                    args.putBoolean(field.getName(), context.getBoolean(field.getName()));
-                }
-                else if (field.getType() == Double.class) {
-                    args.putDouble(field.getName(), context.getDouble(field.getName()));
-                }
-                else if (field.getType() == Float.class) {
-                    args.putFloat(field.getName(), context.getFloat(field.getName()));
-                }
-                else if (field.getType() == Short.class) {
-                    args.putShort(field.getName(), context.getShort(field.getName()));
-                }
-                else if (field.getType() == Byte.class) {
-                    args.putByte(field.getName(), context.getByte(field.getName()));
-                }
-                else if (field.getType() == Long.class || field.getType() == Date.class) {
-                    args.putLong(field.getName(), context.getLong(field.getName()));
-                }
-                else if (field.getType() == Character.class) {
-                    args.putChar(field.getName(), context.getChar(field.getName()));
-                }
-                else if (field.getType() == Parcelable.class) {
-                    args.putParcelable(field.getName(), context.getParcelable(field.getName()));
-                }
-                else if (field.getType() instanceof Serializable) {
-                    args.putSerializable(field.getName(), context.getSerializable(field.getName()));
-                }
-                //TODO: Add support for arrays
-            }
-        }
-        getCurrentStep().setArguments(args);
-    }
-
-    private void persistStepContext() {
-        //Scan the step for fields annotated with @ContextVariable
-        Field[] fields = getCurrentStep().getClass().getDeclaredFields();
-        for (Field field : fields) {
-            ContextVariable contextVar = field.getAnnotation(ContextVariable.class);
-            if (contextVar != null) {
-                //Store its value in the Wizard Context
-                field.setAccessible(true);
-                try {
-                    if (field.getType() == String.class) {
-                        context.putString(field.getName(), (String) field.get(getCurrentStep()));
-                    }
-                    else if (field.getType() == Integer.class) {
-                        context.putInt(field.getName(), field.getInt(getCurrentStep()));
-                    }
-                    else if (field.getType() == Boolean.class) {
-                        context.putBoolean(field.getName(), field.getBoolean(getCurrentStep()));
-                    }
-                    else if (field.getType() == Double.class) {
-                        context.putDouble(field.getName(), field.getDouble(getCurrentStep()));
-                    }
-                    else if (field.getType() == Float.class) {
-                        context.putFloat(field.getName(), field.getFloat(getCurrentStep()));
-                    }
-                    else if (field.getType() == Short.class) {
-                        context.putShort(field.getName(), field.getShort(getCurrentStep()));
-                    }
-                    else if (field.getType() == Byte.class) {
-                        context.putByte(field.getName(), field.getByte(getCurrentStep()));
-                    }
-                    else if (field.getType() == Long.class) {
-                        context.putLong(field.getName(), field.getLong(getCurrentStep()));
-                    }
-                    else if (field.getType() == Character.class) {
-                        context.putChar(field.getName(), field.getChar(getCurrentStep()));
-                    }
-                    else if (field.getType() == Parcelable.class) {
-                        context.putParcelable(field.getName(), (Parcelable) field.get(getCurrentStep()));
-                    }
-                    else if (field.getType() == Date.class) {
-                        context.putLong(field.getName(), ((Date)field.get(getCurrentStep())).getTime());
-                    }
-                    else if (field.getType() instanceof Serializable) {
-                        context.putSerializable(field.getName(), (Serializable) field.get(getCurrentStep()));
-                    }
-                    //TODO: Add support for arrays
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
 }

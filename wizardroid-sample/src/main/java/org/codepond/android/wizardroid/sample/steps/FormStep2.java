@@ -1,14 +1,12 @@
 package org.codepond.android.wizardroid.sample.steps;
 
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import org.codepond.android.wizardroid.ContextVariable;
+import org.codepond.android.wizardroid.persistence.ContextVariable;
 import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardStep;
 
