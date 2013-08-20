@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import org.codepond.android.wizardroid.persistence.ContextManager;
+import org.codepond.android.wizardroid.persistence.ContextManagerImpl;
 
 /**
  * Base class for activities that want to implement step-by-step wizard functionality. 
@@ -14,8 +16,11 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	private static final String TAG = "WizardActivity";
 	private static final String STATE_WIZARD_LAST_STEP = WizardActivity.class.getName() + "#STATE_WIZARD_LAST_STEP";
     private static final String STATE_WIZARD_CONTEXT = "ContextVariable";
+    private static final int DEFAULT_FIRST_STEP = 0;
     private WizardFlow flow;
-	private Wizard wizard;
+    private ContextManager contextManager;
+
+    protected Wizard wizard;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +31,18 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 			throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardActivity#onSetup " +
                     "and use WizardFlow.Builder to create the Wizard's flow followed by WizardActivity#super.onSetup(flow)");
 		}
-		wizard = new Wizard(flow);
-		if (savedInstanceState != null) {
-            wizard.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
-			wizard.setCurrentStep(savedInstanceState.getInt(STATE_WIZARD_LAST_STEP));
+		int lastStepPosition = DEFAULT_FIRST_STEP;
+        //TODO: get rid of this dependecy
+        contextManager = new ContextManagerImpl();
+        if (savedInstanceState != null) {
+            contextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
+			lastStepPosition = savedInstanceState.getInt(STATE_WIZARD_LAST_STEP);
 		}
+        else {
+            contextManager.setContext(new Bundle());
+        }
+        wizard = new Wizard(flow, contextManager);
+        wizard.setCurrentStep(lastStepPosition);
 	}
 
 	@Override
@@ -38,14 +50,18 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 		super.onSaveInstanceState(outState);
 		Log.v(TAG, "Persisting current wizard step ID");
         outState.putInt(STATE_WIZARD_LAST_STEP, wizard.getCurrentStepPosition());
-        outState.putBundle(STATE_WIZARD_CONTEXT, wizard.getContext());
+        outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
 	}
 
-	//Handler for Back key pressed
+    /**
+     * Handler for Back button pressed
+     */
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.v(TAG, "Going back one step");
+            //Back button was pressed, going back one step
 			wizard.getCurrentStep().abort();
 			return true;
 		}
@@ -92,14 +108,14 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 			finish();
 		}
 		else {
-			wizard.back();
+			wizard.goBack();
 		}
 	}
 	
 	private void stepCompleted() {
         Log.v(TAG, "Step completed, proceeding to the next step");
 		if (!wizard.isLastStep()) {
-			wizard.next();
+			wizard.goNext();
 		}
 		else {
 			onWizardDone();

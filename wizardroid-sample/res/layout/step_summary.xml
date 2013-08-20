@@ -9,7 +9,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/form_summary"
-            android:text="@string/sample_form_summary"/>
+            android:text="@string/sample_form_summary"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"/>
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

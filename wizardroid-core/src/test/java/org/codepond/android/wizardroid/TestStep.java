@@ -1,5 +1,7 @@
 package org.codepond.android.wizardroid;
 
+import org.codepond.android.wizardroid.persistence.ContextVariable;
+
 import java.util.Date;
 
 /**

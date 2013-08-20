@@ -3,6 +3,7 @@ package org.codepond.android.wizardroid;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import org.codepond.android.wizardroid.persistence.ContextVariable;
 
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -22,9 +23,21 @@ public abstract class WizardStep extends Fragment {
 	static final int STATE_RUNNING 	= 1;
 	static final int STATE_COMPLETED = 2;
 	static final int STATE_ABORTED 	= 3;
-	
+	static final int EXIT_NEXT = 0;
+    static final int EXIT_PREVIOUS = 1;
+
 	private OnStepStateChangedListener onStepStateChangedListener;
 	private int state = STATE_PENDING; //Default state for all steps
+
+    /**
+     * Called when the wizard is about to go to the next step or
+     * the previous step. Override this method to handle input from the step.
+     * @param exitCode Code indicating whether the wizard is going to the next or previous step. The value would either be
+     *                 WizardStep.EXIT_NEXT when wizard is about to go to the next step or
+     *                 WizardStep.EXIT_PREVIOUS when wizard is about to go to the previous step.
+     */
+    public void onExit(int exitCode) {
+    }
 
     @Override
     public void onAttach(Activity activity) {

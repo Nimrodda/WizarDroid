@@ -6,18 +6,25 @@
               android:layout_height="match_parent">
 
     <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
-            android:text="@string/sample_form_text"/>
+            android:text="@string/sample_form_text"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"/>
     <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/firstnameField"
-            android:hint="@string/hint_firstname"/>
+            android:hint="@string/hint_firstname"
+            android:phoneNumber="false"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"/>
     <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lastnameField"
-            android:hint="@string/hint_lastname"/>
+            android:hint="@string/hint_lastname"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"/>
 </LinearLayout>

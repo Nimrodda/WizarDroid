@@ -1,21 +1,14 @@
 package org.codepond.android.wizardroid.sample.wizards;
 
-import android.os.Bundle;
+import org.codepond.android.wizardroid.R;
+import org.codepond.android.wizardroid.WizardFlow;
 import org.codepond.android.wizardroid.sample.steps.FormStep1;
 import org.codepond.android.wizardroid.sample.steps.FormStep2;
-import org.codepond.android.wizardroid.R;
-import org.codepond.android.wizardroid.WizardActivity;
-import org.codepond.android.wizardroid.WizardFlow;
 
 /**
  * A sample to demonstrate a form in multiple steps.
  */
-public class FormWizard extends WizardActivity {
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.wizard);
-    }
+public class FormWizard extends BaseWizard {
 
     //You must override this method and create a wizard flow by
     //using WizardFlow.Builder as shown in this example
@@ -30,14 +23,5 @@ public class FormWizard extends WizardActivity {
 
         //Call the super method using the newly created flow
         super.onSetup(flow);
-    }
-
-    //Overriding this method is optional
-    @Override
-    public void onWizardDone() {
-        //Do whatever you want to do once the Wizard is complete
-        //in this case I just close the activity, which causes Android
-        //to go back to the previous activity.
-        finish();
     }
 }
