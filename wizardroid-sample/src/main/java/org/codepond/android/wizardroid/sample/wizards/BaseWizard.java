@@ -25,6 +25,7 @@ public abstract class BaseWizard extends WizardActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wizard);
+        getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     /**
