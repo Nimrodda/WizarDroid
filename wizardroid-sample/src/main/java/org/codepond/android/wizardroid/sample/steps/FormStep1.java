@@ -10,7 +10,7 @@ import org.codepond.android.wizardroid.persistence.ContextVariable;
 import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardStep;
 
-public class FormStep1 extends WizardStep implements View.OnClickListener {
+public class FormStep1 extends WizardStep {
 
     @ContextVariable
     private String firstname;
@@ -26,33 +26,20 @@ public class FormStep1 extends WizardStep implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.step_form, container, false);
-        //Set listener for 'Next' button click
-        //Note that we are setting OnClickListener using getActivity() because
-        //the 'Next' button is actually part of the hosting activity's layout and
-        //not the step's layout
-        Button nextButton = (Button) getActivity().findViewById(R.id.next_button);
-        nextButton.setOnClickListener(this);
-        nextButton.setText("Next");
 
         return v;
     }
 
     @Override
-    public void onClick(View view) {
+    public void onExit(int exitCode) {
         //Do some work
         //...
         EditText firstnameEt = (EditText) getActivity().findViewById(R.id.firstnameField);
         EditText lastnameEt = (EditText) getActivity().findViewById(R.id.lastnameField);
 
-        //These model changes will persist to the next step.
-        //Just make sure that you have the model defined there as well.
+        //The values of these fields will be automatically stored in the wizard context
+        //and will be populated in the next steps only if the same field names are used.
         firstname = firstnameEt.getText().toString();
         lastname = lastnameEt.getText().toString();
-
-        //mForm.setFirstname(firstname.getText().toString());
-        //mForm.setLastname(lastname.getText().toString());
-
-        //And call done() to signal that the step is completed successfully
-        done();
     }
 }

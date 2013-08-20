@@ -18,8 +18,9 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
     private static final String STATE_WIZARD_CONTEXT = "ContextVariable";
     private static final int DEFAULT_FIRST_STEP = 0;
     private WizardFlow flow;
-	private Wizard wizard;
     private ContextManager contextManager;
+
+    protected Wizard wizard;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +53,15 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
         outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
 	}
 
-	//Handler for Back key pressed
+    /**
+     * Handler for Back button pressed
+     */
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.v(TAG, "Going back one step");
+            //Back button was pressed, going back one step
 			wizard.getCurrentStep().abort();
 			return true;
 		}
@@ -103,14 +108,14 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 			finish();
 		}
 		else {
-			wizard.back();
+			wizard.goBack();
 		}
 	}
 	
 	private void stepCompleted() {
         Log.v(TAG, "Step completed, proceeding to the next step");
 		if (!wizard.isLastStep()) {
-			wizard.next();
+			wizard.goNext();
 		}
 		else {
 			onWizardDone();

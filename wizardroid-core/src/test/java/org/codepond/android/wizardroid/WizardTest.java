@@ -66,7 +66,7 @@ public class WizardTest {
     @Test
     public void testNext_AdvanceOneStep_StepPositionIsOne() {
         int expectedStepPosition = 1;
-        wizard.next();
+        wizard.goNext();
         assertEquals(String.format("expectedStepPosition should be 1, actual: %s", wizard.getCurrentStepPosition()),
                 expectedStepPosition, wizard.getCurrentStepPosition());
     }
@@ -76,7 +76,7 @@ public class WizardTest {
         wizard.setCurrentStep(1);
         int expectedStepPosition = 0;
 
-        wizard.back();
+        wizard.goBack();
         assertEquals(String.format("expectedStepPosition should be 0, actual: %s", wizard.getCurrentStepPosition()),
                 expectedStepPosition, wizard.getCurrentStepPosition());
     }

@@ -9,7 +9,7 @@ import android.widget.TextView;
 import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardStep;
 
-public class TutorialStep2 extends WizardStep implements View.OnClickListener {
+public class TutorialStep2 extends WizardStep {
 
     //You must have an empty constructor for every step
     public TutorialStep2() {
@@ -22,24 +22,8 @@ public class TutorialStep2 extends WizardStep implements View.OnClickListener {
         View v = inflater.inflate(R.layout.step_tutorial, container, false);
         TextView tv = (TextView) v.findViewById(R.id.textView);
         tv.setText("This is an example of Step 2 and also the last step in this wizard. " +
-                "By clicking Next you will go back to the main activity. Hit your phone back button to go back to the previous step");
-        //Set listener for 'Next' button click
-        //Note that we are setting OnClickListener using getActivity() because
-        //the 'Next' button is actually part of the hosting activity's layout and
-        //not the step's layout
-        Button nextButton = (Button) getActivity().findViewById(R.id.next_button);
-        nextButton.setOnClickListener(this);
-        nextButton.setText("Finish");
-
+                "By pressing Finish you will conclude this wizard and go back to the main activity." +
+                "Hit the back button to go back to the previous step.");
         return v;
-    }
-
-    @Override
-    public void onClick(View view) {
-        //Do some work
-        //...
-
-        //And call done() to signal that the step is completed successfully
-        done();
     }
 }

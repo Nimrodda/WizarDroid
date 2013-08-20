@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    These action bar item IDs (menu item IDs) are defined here for
+    programmatic use. Normally, IDs are created using the "@+id/foo"
+    syntax, but since these IDs aren't created in menu XML, rather
+    used for programmatically-instantiated action bar items, they
+    are defined here.
+    -->
+    <item type="id" name="action_next" />
+
+</resources>

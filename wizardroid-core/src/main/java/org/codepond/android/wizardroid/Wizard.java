@@ -8,7 +8,7 @@ import org.codepond.android.wizardroid.persistence.ContextManager;
  * the wizard's flow progression. It is used directly by
  * {@link WizardActivity} to manage the wizard.
  */
-class Wizard {
+public class Wizard {
 	private static final String TAG = "Wizard";
 	private int currentStep;
 	private final FragmentManager fragmentManager;
@@ -39,7 +39,8 @@ class Wizard {
 	/**
 	 * Advance the wizard to the next step
 	 */
-	void next() {
+	void goNext() {
+        getCurrentStep().onExit(WizardStep.EXIT_NEXT);
         contextManager.persistStepContext(getCurrentStep());
 		currentStep++;
         contextManager.loadStepContext(getCurrentStep());
@@ -52,7 +53,8 @@ class Wizard {
     /**
 	 * Takes the wizard one step back
 	 */
-	void back() {
+	void goBack() {
+        getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
 		getCurrentStep().setState(WizardStep.STATE_PENDING);
 		currentStep--;
 		fragmentManager.popBackStack();
@@ -71,7 +73,7 @@ class Wizard {
 	 * Gets the current step position
 	 * @return integer representing the position of the step in the WizardFlow
 	 */
-	int getCurrentStepPosition() {
+    public int getCurrentStepPosition() {
 		return currentStep;
 	}
 	
@@ -79,7 +81,7 @@ class Wizard {
 	 * Gets the current step
 	 * @return WizardStep the current WizardStep instance
 	 */
-	WizardStep getCurrentStep() {
+    public WizardStep getCurrentStep() {
 		return flow.getSteps().get(currentStep);
 	}
 	
@@ -89,7 +91,7 @@ class Wizard {
 	 * @return WizardStep the instance of WizardStep in the required position
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	WizardStep getStepAtPosition(int position) throws ArrayIndexOutOfBoundsException {
+    public WizardStep getStepAtPosition(int position) throws ArrayIndexOutOfBoundsException {
 		return flow.getSteps().get(position);
 	}
 	
@@ -97,7 +99,7 @@ class Wizard {
 	 * Checks if the current step is the last step in the Wizard
 	 * @return boolean representing the result of the check
 	 */
-	boolean isLastStep() {
+    public boolean isLastStep() {
 		return currentStep == flow.getSteps().size() - 1;
 	}
 	
@@ -105,7 +107,7 @@ class Wizard {
 	 * Checks if the step is the first step in the Wizard
 	 * @return boolean representing the result of the check
 	 */
-	boolean isFirstStep() {
+	public boolean isFirstStep() {
 		return currentStep == 0;
 	}
 }

@@ -10,7 +10,7 @@ import org.codepond.android.wizardroid.persistence.ContextVariable;
 import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardStep;
 
-public class FormStep2 extends WizardStep implements View.OnClickListener {
+public class FormStep2 extends WizardStep {
 
     @ContextVariable
     private String firstname;
@@ -33,22 +33,6 @@ public class FormStep2 extends WizardStep implements View.OnClickListener {
         firstnameTv.setText(firstname);
         lastnameTv.setText(lastname);
 
-        //Set listener for 'Next' button click
-        //Note that we are setting OnClickListener using getActivity() because
-        //the 'Next' button is actually part of the hosting activity's layout and
-        //not the step's layout
-        Button nextButton = (Button) getActivity().findViewById(R.id.next_button);
-        nextButton.setOnClickListener(this);
-        nextButton.setText("Finish");
-
         return v;
-    }
-
-    @Override
-    public void onClick(View view) {
-        //Do some work
-        //...
-        //And call done() to signal that the step is completed successfully
-        done();
     }
 }
