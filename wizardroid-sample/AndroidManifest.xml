@@ -14,8 +14,10 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-      <activity android:name=".sample.wizards.TutorialWizard"/>
-      <activity android:name=".sample.wizards.FormWizard"/>
+      <activity android:name=".sample.wizards.TutorialWizard"
+                android:parentActivityName=".sample.MainActivity"/>
+      <activity android:name=".sample.wizards.FormWizard"
+                android:parentActivityName=".sample.MainActivity"/>
   </application>
 
 </manifest>
