@@ -26,7 +26,7 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "Loading wizard data");
-        onSetup(flow);
+        flow = onSetup();
 		if (flow == null) {
 			throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardActivity#onSetup " +
                     "and use WizardFlow.Builder to create the Wizard's flow followed by WizardActivity#super.onSetup(flow)");
@@ -89,12 +89,9 @@ public abstract class WizardActivity extends FragmentActivity implements WizardS
 	}
 	
 	/**
-	 * Set up the Wizard's flow. You must override this method and use {@link WizardFlow.Builder} to create the Wizard's flow.
-	 * @param flow The wizard's flow which was created by calling {@link WizardFlow.Builder#create()}.
+	 * Set up the Wizard's flow. Use {@link WizardFlow.Builder} to create the Wizard's flow.
 	 */
-	public void onSetup(WizardFlow flow) {
-		this.flow = flow;
-	}
+	public abstract WizardFlow onSetup();
 
 	/**
 	 * Execute when wizard is complete.  
