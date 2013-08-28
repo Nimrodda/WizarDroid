@@ -22,10 +22,10 @@
 			<groupId>org.codepond.android.wizardroid</groupId>
 			<artifactId>wizardroid-core</artifactId>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>support-v4</artifactId>
-		</dependency>
+		</dependency>-->
     </dependencies>
 
     <build>

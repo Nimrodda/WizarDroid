@@ -1,12 +1,11 @@
 package org.codepond.android.wizardroid.sample.wizards;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.*;
+import android.widget.Button;
+
 import org.codepond.android.wizardroid.R;
-import org.codepond.android.wizardroid.WizardActivity;
+import org.codepond.android.wizardroid.WizardFragment;
 
 /**
  * Base wizard class which uses the action bar to control the flow
@@ -14,18 +13,27 @@ import org.codepond.android.wizardroid.WizardActivity;
  * us to set buttons' labels according to the given step.
  * @see <a href="http://developer.android.com/guide/topics/ui/actionbar.html">How to use the action bar</a>
  */
-public abstract class BaseWizard extends WizardActivity {
+public abstract class BaseWizard extends WizardFragment implements View.OnClickListener {
 
     private static final String TAG = BaseWizard.class.getSimpleName();
+    private Button nextButton;
+    private Button previousButton;
 
+    public BaseWizard() {
+        super();
+    }
     /**
      * Setting common layout for all wizards
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.wizard);
-        getActionBar().setDisplayShowHomeEnabled(true);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View wizardLayout = inflater.inflate(R.layout.wizard, container, false);
+        nextButton = (Button) wizardLayout.findViewById(R.id.wizard_next_button);
+        nextButton.setOnClickListener(this);
+        previousButton = (Button) wizardLayout.findViewById(R.id.wizard_previous_button);
+        previousButton.setOnClickListener(this);
+
+        return wizardLayout;
     }
 
     /**
@@ -37,58 +45,26 @@ public abstract class BaseWizard extends WizardActivity {
         //Do whatever you want to do once the Wizard is complete
         //in this case I just close the activity, which causes Android
         //to go back to the previous activity.
-        finish();
+        getActivity().finish();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.wizard, menu);
-
-        menu.findItem(R.id.action_previous).setEnabled(!wizard.isFirstStep());
-
-        //Add either a "next" or "finish" button to the action bar, depending on which step
-        //is currently visible.
-        MenuItem item = menu.add(Menu.NONE, R.id.action_next, Menu.NONE,
-                (wizard.isLastStep())
-                        ? R.string.action_finish
-                        : R.string.action_next);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_previous:
-                //Go to the previous step in the wizard. If there is no previous step, the
-                //wizard will terminate and go back to the calling activity.
-                wizard.getCurrentStep().abort();
-                invalidateOptionsMenu();
-                return true;
-
-            case R.id.action_next:
-                //Advance to the next step in the wizard. If there is no next step, the wizard
-                //will terminate and go back to the calling activity.
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.wizard_next_button:
                 wizard.getCurrentStep().done();
-                invalidateOptionsMenu();
-                return true;
+                break;
+            case R.id.wizard_previous_button:
+                wizard.getCurrentStep().abort();
+                break;
         }
-        return super.onOptionsItemSelected(item);
+        updateWizardControls();
     }
 
-    /**
-     * Handler for Back key pressed which overrides WizardActivity#onKeyDown to invalidate
-     * the action bar whenever back button is pressed and therefore change the buttons' labels.
-     */
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.v(TAG, "Going back one step");
-            wizard.getCurrentStep().abort();
-            invalidateOptionsMenu();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+    private void updateWizardControls() {
+        previousButton.setEnabled(!wizard.isFirstStep());
+        nextButton.setText(wizard.isLastStep()
+                ? R.string.action_finish
+                : R.string.action_next);
     }
 }

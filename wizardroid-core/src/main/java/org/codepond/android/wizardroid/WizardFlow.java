@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
@@ -60,8 +59,9 @@ public class WizardFlow {
 
 		private List<WizardStep> wizardSteps;
 		private int containerId;
-		private WizardActivity activity;
+		private FragmentActivity activity;
 		private boolean valid;
+        private WizardFragment wizardFragment;
 		
 		/**
 		 * Construct a WizardFlow.Builder
@@ -86,12 +86,13 @@ public class WizardFlow {
 		}
 
 		/**
-		 * Set the WizardActivity
-		 * @param activity the WizardActivity which will run the wizard
+		 * Set the WizardFragment
+		 * @param wizardFragment the WizardFragment which will run the wizard
 		 * @return Builder for chaining set methods
 		 */
-		public Builder setActivity(WizardActivity activity) {
-			this.activity = activity;
+		public Builder setActivity(WizardFragment wizardFragment) {
+			this.activity = wizardFragment.getActivity();
+            this.wizardFragment = wizardFragment;
 			//Valid if the container was already set
             valid = containerId != -1;
 			return this;
@@ -139,7 +140,7 @@ public class WizardFlow {
 					throw new RuntimeException(String.format("Failed to add step: %s to the WizardFlow while attempting to instantiate the step", stepClass.getName()));
 				}
 			}
-            step.setOnStepChangedListener(activity);
+            step.setOnStepChangedListener(wizardFragment);
 			wizardSteps.add(step);
 			valid = true;
 			return this;

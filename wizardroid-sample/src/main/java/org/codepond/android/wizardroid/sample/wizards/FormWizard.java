@@ -10,6 +10,10 @@ import org.codepond.android.wizardroid.sample.steps.FormStep2;
  */
 public class FormWizard extends BaseWizard {
 
+    public FormWizard() {
+        super();
+    }
+
     //You must override this method and create a wizard flow by
     //using WizardFlow.Builder as shown in this example
     @Override

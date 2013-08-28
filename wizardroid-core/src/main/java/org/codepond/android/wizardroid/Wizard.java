@@ -1,15 +1,16 @@
 package org.codepond.android.wizardroid;
 
 import android.support.v4.app.FragmentManager;
+
 import org.codepond.android.wizardroid.persistence.ContextManager;
 
 /**
  * The engine of the Wizard. This class is in charge of
  * the wizard's flow progression. It is used directly by
- * {@link WizardActivity} to manage the wizard.
+ * {@link WizardFragment} to manage the wizard.
  */
 public class Wizard {
-	private static final String TAG = "Wizard";
+	private static final String TAG = Wizard.class.getSimpleName();
 	private int currentStep;
 	private final FragmentManager fragmentManager;
 	private final WizardFlow flow;

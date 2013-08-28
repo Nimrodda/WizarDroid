@@ -7,6 +7,10 @@ import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
 
 public class TutorialWizard extends BaseWizard {
 
+    public TutorialWizard() {
+        super();
+    }
+
     //You must override this method and create a wizard flow by
     //using WizardFlow.Builder as shown in this example
     @Override
