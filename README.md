@@ -1,11 +1,20 @@
-WizarDroid
-==========
+Overview
+--------
 
-WizarDroid is a lightweight Android library for creating Wizard like Activities such as Installation Wizard, 
-Step by Step processes, etc. It is built on top of Android's Fragments featuring Wizard state persistence 
-and simple API for controling the flow of your application. 
+WizarDroid is a lightweight Android library, developed by CodePond.org, that addresses a feature that Android is surprisingly missing, Wizards. It is built on top of Android's Fragments, using FragmentManager to dynamically change the view. Implementation is done mainly by extending __WizardFragment__ class.
 
-Prereqiusits
+Key advantages:
+
+* Compatible with other libraries such as ActionBarSherlock
+* Support for nested fragments
+* Wizard's flow is defined in one place and can be maintained easily
+* Step context is persistent and passed between steps automatically using reflection
+* Simple and consistent API for controlling wizard's flow in runtime 
+
+
+More info is available on WizarDroid [home page](http://wizardroid.codepond.org). 
+
+Requirements
 ------------
 
 You need to make sure that your project is compatible with the following:
@@ -13,204 +22,64 @@ You need to make sure that your project is compatible with the following:
 1.	Minimum SDK is API level 9
 2.	Android's support library
 
-Getting started
----------------
-
-Take a quick tour or head directly to the [Wiki](https://github.com/Nimrodda/WizarDroid/wiki/Introduction) for more info.
-
-1.	Create an Activity that inherits from WizardActivity
-2.	Create your Wizard's steps by inheriting from WizardStep
-3.	Once you've got your Wizard's steps ready, override onSetup() in your WizardActivity and create a new WizardFlow
-4.	Last but not least, override onWizardDone() in your WizardActivity and do whatever you want to do once the Wizard reached the last step (typically, here you will call the activity's finish() method or return a result, etc.)
-
-**The following sample is available on [WizarDroid's Github repository](https://github.com/Nimrodda/WizarDroid/tree/master/wizardroid-sample)**
-
-**1.	The Activity's Layout**
-
-**Notice the FrameLayout which will act as our Step container.**
-
-	<?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
-
-        <!--
-            **********************************************************************
-            **You MUST have this FrameLayout as the container for wizard's steps**
-            **********************************************************************
-        -->
-        <FrameLayout
-                android:id="@+id/step_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        <!-- Button for signalling the wizard to proceed to the next step -->
-        <Button
-                android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:text="Next" />
-    </LinearLayout>
-
-**2.	The Activity**
-
-	public class TutorialWizard extends WizardActivity {
-
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.wizard);
-        }
-
-        //You must override this method and create a wizard flow by
-        //using WizardFlow.Builder as shown in this example
-        @Override
-        public void onSetup(WizardFlow flow) {
-            flow = new WizardFlow.Builder()
-                    .setActivity(this)                      //First, set the hosting activity for the wizard
-                    .setContainerId(R.id.step_container)    //then set the layout container for the steps.
-                    .addStep(TutorialStep1.class)                   //Add your steps in the order you want them
-                    .addStep(TutorialStep2.class)                   //to appear and eventually call create()
-                    .create();                              //to create the wizard flow.
-
-            //Call the super method using the newly created flow
-            super.onSetup(flow);
-        }
-
-        //Overriding this method is optional
-        @Override
-        public void onWizardDone() {
-            //Do whatever you want to do once the Wizard is complete
-            //in this case I just close the activity, which causes Android
-            //to go back to the previous activity.
-            finish();
-        }
-	}
-
-**3.	Steps Layout**
-
-**To make it simple, we will use the same layout for all the steps.**
-
-**XML:**
-
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent">
-
-        <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView"/>
-    </LinearLayout>
-
-**Code:**
-
-**TutorialStep1**
-
-	public class TutorialStep1 extends WizardStep implements View.OnClickListener {
-
-        //You must have an empty constructor for every tutorial_step
-        public TutorialStep1() {
-        }
-
-        //Set your layout here
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.tutorial_step, container, false);
-            TextView tv = (TextView) v.findViewById(R.id.textView);
-            tv.setText("This is an example of Step 1 in the wizard. Click the Next " +
-                    "button to proceed to the next tutorial_step. Hit your phone's back button to go back to the calling activity.");
-
-            //Set listener for 'Next' button click
-            //Note that we are setting OnClickListener using getActivity() because
-            //the 'Next' button is actually part of the hosting activity's layout and
-            //not the tutorial_step's layout
-            Button nextButton = (Button) getActivity().findViewById(R.id.next_button);
-            nextButton.setOnClickListener(this);
-            nextButton.setText("Next");
-
-            return v;
-        }
-
-        @Override
-        public void onClick(View view) {
-            //Do some work
-            //...
-
-            //And call done() to signal that the tutorial_step is completed successfully
-            done();
-        }
-    }
-
-**TutorialStep2**
-
-    public class TutorialStep2 extends WizardStep implements View.OnClickListener {
-
-        //You must have an empty constructor for every tutorial_step
-        public TutorialStep2() {
-        }
-
-        //Set your layout here
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.tutorial_step, container, false);
-            TextView tv = (TextView) v.findViewById(R.id.textView);
-            tv.setText("This is an example of Step 2 and also the last tutorial_step in this wizard. " +
-                    "By clicking Next you will go back to the main activity. Hit your phone back button to go back to the previous tutorial_step");
-            //Set listener for 'Next' button click
-            //Note that we are setting OnClickListener using getActivity() because
-            //the 'Next' button is actually part of the hosting activity's layout and
-            //not the tutorial_step's layout
-            Button nextButton = (Button) getActivity().findViewById(R.id.next_button);
-            nextButton.setOnClickListener(this);
-            nextButton.setText("Finish");
-
-            return v;
-        }
-
-        @Override
-        public void onClick(View view) {
-            //Do some work
-            //...
-
-            //And call done() to signal that the tutorial step is completed successfully
-            done();
-        }
-    }
-
-**That's it!** Run the application and see how it's working.
-Press the next button to go to the next step and press your phone's back button to go back one step.
-
-**This is just a simple example of what you can do with WizarDroid.
-For more complex scenarios continue to the Advanced section.**
-
-
-Installation
-------------
-
-*    Maven
-
-    <dependency>
-        <groupId>org.codepond.android.wizardroid</groupId>
-        <artifactId>wizardroid-core</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-*    Download the pre-compiled WizarDroid jar from [SourceForge](https://sourceforge.net/projects/cpwizardroid/)
-*    Build from [source]((https://github.com/Nimrodda/WizarDroid/).
 
 Build
 -----
 
-The easiest way is to build the project with Maven by running 'mvn clean install'. 
-Otherwise just import the project to IntelliJ or Eclipse and build.
+Build is done using Gradle as of Google I/O 2013: Android new build system. [Learn more](http://tools.android.com)
+
+Run the following from the project's root folder:
+
+    Gradle assemble
+
+Then copy the AAR file located under folder __wizardroid-core/build/libs__ to your project's classpath.
+
+In case you are building your project with Gradle, simply copy __wizardroid-core__ to your project's __libs__ folder and update the dependency in both __settings.gradle__ and __build.gradle__ as follows:
+
+
+
+__Settings.gradle__:
+
+    include ':wizardroid-core'
+
+
+__Build.gradle__:
+
+    dependencies {
+        compile 'com.android.support:support-v4:18.0.0'
+        compile project(':wizardroid-core')
+}
+
+**NOTE:** In order to use Android Support library v4 in Gradle you have to install '__Android Support Repository__' in Android SDK Manager.
+
+
+Documentation
+-------------
+
+Refer to the [Wiki pages on github](https://github.com/Nimrodda/WizarDroid/wiki) or check out the bundled sample project.
+
+
+Credits
+-------
+WizarDroid is developed and maintained by Nimrod Dayan ([CodePond.org](http://www.codepond.org)).
 
 License
 -------
 
-You may use WizarDroid under the terms of [MIT License](https://github.com/Nimrodda/WizarDroid/LICENSE).
+    Copyright (c) 2013 Nimrod Dayan (CodePond.org)
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+    to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+    and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+    PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    
+
+
