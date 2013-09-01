@@ -12,6 +12,7 @@ import org.codepond.android.wizardroid.WizardStep;
 
 public class FormStep2 extends WizardStep {
 
+    //NOTE: field names MUST be identical to previous step's fields names
     @ContextVariable
     private String firstname;
     @ContextVariable
@@ -30,6 +31,8 @@ public class FormStep2 extends WizardStep {
         TextView firstnameTv = (TextView) v.findViewById(R.id.firstname);
         TextView lastnameTv = (TextView) v.findViewById(R.id.lastname);
 
+        //WizarDroid will automatically inject the values for these fields
+        //so we can simply set the text views
         firstnameTv.setText(firstname);
         lastnameTv.setText(lastname);
 

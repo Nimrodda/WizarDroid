@@ -23,8 +23,9 @@ public abstract class WizardStep extends Fragment {
 	static final int STATE_RUNNING 	= 1;
 	static final int STATE_COMPLETED = 2;
 	static final int STATE_ABORTED 	= 3;
-	static final int EXIT_NEXT = 0;
-    static final int EXIT_PREVIOUS = 1;
+
+    public static final int EXIT_NEXT = 0;
+    public static final int EXIT_PREVIOUS = 1;
 
 	private OnStepStateChangedListener onStepStateChangedListener;
 	private int state = STATE_PENDING; //Default state for all steps

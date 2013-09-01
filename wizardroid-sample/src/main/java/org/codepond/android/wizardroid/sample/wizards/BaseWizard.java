@@ -19,6 +19,10 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
     private Button nextButton;
     private Button previousButton;
 
+    /**
+     * Empty constructor for Fragment
+     * You must have an empty constructor according to {@link #Fragment} documentation
+     */
     public BaseWizard() {
         super();
     }
@@ -48,6 +52,9 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
         getActivity().finish();
     }
 
+    /**
+     * Controlling wizard flow
+     */
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
@@ -58,9 +65,13 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
                 wizard.getCurrentStep().abort();
                 break;
         }
+        //Updating UI
         updateWizardControls();
     }
 
+    /**
+     * Updates the UI according to current step position
+     */
     private void updateWizardControls() {
         previousButton.setEnabled(!wizard.isFirstStep());
         nextButton.setText(wizard.isLastStep()

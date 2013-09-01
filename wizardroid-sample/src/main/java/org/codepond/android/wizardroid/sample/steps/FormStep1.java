@@ -12,6 +12,7 @@ import org.codepond.android.wizardroid.WizardStep;
 
 public class FormStep1 extends WizardStep {
 
+    //Tell WizarDroid to persist these fields for next steps
     @ContextVariable
     private String firstname;
     @ContextVariable
@@ -30,8 +31,20 @@ public class FormStep1 extends WizardStep {
         return v;
     }
 
+    //Called whenever the wizard proceeds to the next step or goes back to the previous step
     @Override
     public void onExit(int exitCode) {
+        switch (exitCode) {
+            case WizardStep.EXIT_NEXT:
+                bindDataFields();
+                break;
+            case WizardStep.EXIT_PREVIOUS:
+                //Do nothing...
+                break;
+        }
+    }
+
+    private void bindDataFields() {
         //Do some work
         //...
         EditText firstnameEt = (EditText) getActivity().findViewById(R.id.firstnameField);
