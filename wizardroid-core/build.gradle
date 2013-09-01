@@ -7,6 +7,10 @@ buildscript {
     }
 }
 apply plugin: 'android-library'
+apply plugin: 'maven'
+
+version = "1.0.0-SNAPSHOT"
+group = "org.codepond.android.wizardroid"
 
 repositories {
     mavenCentral()
@@ -24,4 +28,42 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:18.0.0'
+}
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
+uploadArchives {
+	configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+			repository(url: sonatypeRepoSnapshots) {
+            authentication(userName: sonatypeUsername,
+                    password: sonatypePassword)
+			}
+			pom.project {
+				name 'WizarDroid'
+				packaging 'aar'
+				description 'Lightweight Android library for creating step by step wizards'
+				url 'http://wizardroid.codepond.org'
+
+				scm {
+					url 'http://www.github.com/nimrodda/wizardroid'
+					connection 'scm:git://github.com/Nimrodda/WizarDroid.git'
+					developerConnection 'scm:git://github.com/Nimrodda/WizarDroid.git'
+				}
+
+				licenses {
+					license {
+						name 'The MIT License (MIT)'
+						url 'https://raw.github.com/Nimrodda/WizarDroid/master/license'
+						distribution 'repo'
+					}
+				}
+			}
+        }
+    }
 }
