@@ -13,9 +13,9 @@ import org.codepond.android.wizardroid.persistence.ContextManagerImpl;
 /**
  * Base class for fragments that want to implement step-by-step wizard functionality.
  * Override {@link WizardFragment#onSetup()} to set up the wizard's flow
- * and optionally {@link WizardFragment#onWizardDone()} to handle wizard's finish event.
+ * and optionally {@link WizardFragment#onWizardComplete()} ()} to handle wizard's finish event.
  */
-public abstract class WizardFragment extends Fragment implements WizardStep.OnStepStateChangedListener {
+public abstract class WizardFragment extends Fragment implements Wizard.WizardCallbacks {
 	private static final String TAG = WizardFragment.class.getSimpleName();
 	private static final String STATE_WIZARD_LAST_STEP = WizardFragment.class.getName() + "#STATE_WIZARD_LAST_STEP";
     private static final String STATE_WIZARD_CONTEXT = "ContextVariable";
@@ -48,7 +48,7 @@ public abstract class WizardFragment extends Fragment implements WizardStep.OnSt
         else {
             contextManager.setContext(new Bundle());
         }
-        wizard = new Wizard(flow, contextManager);
+        wizard = new Wizard(flow, contextManager, this);
         wizard.setCurrentStep(lastStepPosition);
     }
 
@@ -60,54 +60,17 @@ public abstract class WizardFragment extends Fragment implements WizardStep.OnSt
         outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
 	}
 
-	/**
-	 * Fire when a step's state was changed.
-	 */
-	@Override
-	public final void onStepStateChanged(WizardStep step) {
-        Log.v(TAG, "Step state changed");
-		switch (step.getState()) {
-		case WizardStep.STATE_ABORTED:
-			stepAborted();
-			break;
-		case WizardStep.STATE_COMPLETED:
-			stepCompleted();
-			break;
-		case WizardStep.STATE_RUNNING:
-		case WizardStep.STATE_PENDING:
-		default:
-			break;
-		}
-	}
-	
-	/**
+    /**
+     * Execute when wizard is complete.
+     */
+    @Override
+    public void onWizardComplete() {
+
+    }
+
+    /**
 	 * Set up the Wizard's flow. Use {@link WizardFlow.Builder} to create the Wizard's flow.
 	 */
 	public abstract WizardFlow onSetup();
 
-	/**
-	 * Execute when wizard is complete.  
-	 */
-	public void onWizardDone() {
-	}
-
- 	private void stepAborted() {
-        Log.v(TAG, "Step was aborted, going back one step");
-		if (wizard.isFirstStep()) {
-			//TODO: Think what to do here
-		}
-		else {
-			wizard.goBack();
-		}
-	}
-	
-	private void stepCompleted() {
-        Log.v(TAG, "Step completed, proceeding to the next step");
-		if (!wizard.isLastStep()) {
-			wizard.goNext();
-		}
-		else {
-			onWizardDone();
-		}
-	}
 }

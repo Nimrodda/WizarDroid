@@ -61,9 +61,8 @@ public class WizardFlow {
 		private int containerId;
 		private FragmentActivity activity;
 		private boolean valid;
-        private WizardFragment wizardFragment;
-		
-		/**
+
+        /**
 		 * Construct a WizardFlow.Builder
 		 */
 		public Builder() {
@@ -92,8 +91,7 @@ public class WizardFlow {
 		 */
 		public Builder setActivity(WizardFragment wizardFragment) {
 			this.activity = wizardFragment.getActivity();
-            this.wizardFragment = wizardFragment;
-			//Valid if the container was already set
+            //Valid if the container was already set
             valid = containerId != -1;
 			return this;
 		}
@@ -140,7 +138,6 @@ public class WizardFlow {
 					throw new RuntimeException(String.format("Failed to add step: %s to the WizardFlow while attempting to instantiate the step", stepClass.getName()));
 				}
 			}
-            step.setOnStepChangedListener(wizardFragment);
 			wizardSteps.add(step);
 			valid = true;
 			return this;

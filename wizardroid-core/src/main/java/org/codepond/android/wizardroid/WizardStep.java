@@ -13,22 +13,16 @@ import java.util.Date;
  * As with regular {@link Fragment} each inherited class must have an empty constructor.
  */
 public abstract class WizardStep extends Fragment {
-	private static final String TAG = "WizardStep";
+	private static final String TAG = WizardStep.class.getSimpleName();
 
-    static interface OnStepStateChangedListener {
-		void onStepStateChanged(WizardStep step);
-	}
-
-	static final int STATE_PENDING 	= 0;
-	static final int STATE_RUNNING 	= 1;
-	static final int STATE_COMPLETED = 2;
-	static final int STATE_ABORTED 	= 3;
-
+    /**
+     * Step exit code when wizard proceeds to the next step
+     */
     public static final int EXIT_NEXT = 0;
+    /**
+     * Step exit code when wizard goes back one step
+     */
     public static final int EXIT_PREVIOUS = 1;
-
-	private OnStepStateChangedListener onStepStateChangedListener;
-	private int state = STATE_PENDING; //Default state for all steps
 
     /**
      * Called when the wizard is about to go to the next step or
@@ -50,7 +44,7 @@ public abstract class WizardStep extends Fragment {
     }
 
     private void bindFields(Bundle args) {
-        //Scan the step for fields annotaed with @ContextVariable
+        //Scan the step for fields annotated with @ContextVariable
         //and bind value if found in step's arguments
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -69,31 +63,4 @@ public abstract class WizardStep extends Fragment {
             }
         }
     }
-
-    /**
-     * Mark the step as 'Done' and proceed to the next step in the flow.
-     */
-    public final void done() {
-        setState(STATE_COMPLETED);
-    }
-
-    /**
-     * Mark the step as 'Aborted' and go back to previous step or activity.
-     */
-    public final void abort() {
-        setState(STATE_ABORTED);
-    }
-
-    void setOnStepChangedListener(OnStepStateChangedListener onStepStateChangedListener) {
-		this.onStepStateChangedListener = onStepStateChangedListener;
-	}
-	
-	int getState() {
-		return state;
-	}
-
-	void setState(int state) {
-		this.state = state;
-		onStepStateChangedListener.onStepStateChanged(this);
-	}
 }

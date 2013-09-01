@@ -10,29 +10,34 @@ import org.codepond.android.wizardroid.persistence.ContextManager;
  * {@link WizardFragment} to manage the wizard.
  */
 public class Wizard {
-	private static final String TAG = Wizard.class.getSimpleName();
+	public static interface WizardCallbacks {
+        public void onWizardComplete();
+    }
+
+    private static final String TAG = Wizard.class.getSimpleName();
 	private int currentStep;
 	private final FragmentManager fragmentManager;
 	private final WizardFlow flow;
 	private final int fragmentContainerId;
     private final ContextManager contextManager;
+    private final WizardCallbacks callbacks;
 
 
     /**
 	 * Constructor for Wizard
 	 * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
 	 */
-	Wizard(WizardFlow wizardFlow, ContextManager contextManager) {
+	public Wizard(WizardFlow wizardFlow, ContextManager contextManager, WizardCallbacks callbacks) {
 		this.flow = wizardFlow;
         this.contextManager = contextManager;
-		this.fragmentContainerId = wizardFlow.getFragmentContainerId();
+        this.callbacks = callbacks;
+        this.fragmentContainerId = wizardFlow.getFragmentContainerId();
 		this.fragmentManager = flow.getFragmentManager();
 
 		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
 		WizardStep step = (WizardStep) fragmentManager.findFragmentByTag(currentStepTag);
 		if (step == null) {
 			fragmentManager.beginTransaction().add(fragmentContainerId, getCurrentStep(), currentStepTag).commit();
-			getCurrentStep().setState(WizardStep.STATE_RUNNING);
 		}
 
 	}
@@ -40,33 +45,40 @@ public class Wizard {
 	/**
 	 * Advance the wizard to the next step
 	 */
-	void goNext() {
-        getCurrentStep().onExit(WizardStep.EXIT_NEXT);
-        contextManager.persistStepContext(getCurrentStep());
-		currentStep++;
-        contextManager.loadStepContext(getCurrentStep());
-		String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
-		fragmentManager.beginTransaction().replace(fragmentContainerId, getCurrentStep(), currentStepTag)
-				.addToBackStack(null).commit();
-		getCurrentStep().setState(WizardStep.STATE_RUNNING);
+	public void goNext() {
+        if (isLastStep()) {
+            callbacks.onWizardComplete();
+        }
+        else {
+            getCurrentStep().onExit(WizardStep.EXIT_NEXT);
+            contextManager.persistStepContext(getCurrentStep());
+            currentStep++;
+            contextManager.loadStepContext(getCurrentStep());
+            String currentStepTag = WizardFlow.getTagForWizardStep(currentStep, getCurrentStep().getClass());
+            fragmentManager.beginTransaction().replace(fragmentContainerId, getCurrentStep(), currentStepTag)
+                    .addToBackStack(null).commit();
+        }
 	}
 
     /**
 	 * Takes the wizard one step back
 	 */
-	void goBack() {
-        getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
-		getCurrentStep().setState(WizardStep.STATE_PENDING);
-		currentStep--;
-		fragmentManager.popBackStack();
-		getCurrentStep().setState(WizardStep.STATE_RUNNING);
+	public void goBack() {
+        if (isFirstStep()) {
+            throw new RuntimeException("Attempt to go back one step failed. Current step is the first step in the wizard.");
+        }
+        else {
+            getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
+            currentStep--;
+            fragmentManager.popBackStack();
+        }
 	}
 	
 	/**
 	 * Sets the current step of the wizard
 	 * @param stepId the position of the step within the WizardFlow
 	 */
-	void setCurrentStep(int stepId) {
+	public void setCurrentStep(int stepId) {
 		currentStep = stepId;
 	}
 	

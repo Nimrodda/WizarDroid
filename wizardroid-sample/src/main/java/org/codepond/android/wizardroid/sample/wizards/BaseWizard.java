@@ -41,11 +41,11 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
     }
 
     /**
-     * Triggered whenever the wizard is completed.
+     * Triggered when the wizard is completed.
      * Overriding this method is optional.
      */
     @Override
-    public void onWizardDone() {
+    public void onWizardComplete() {
         //Do whatever you want to do once the Wizard is complete
         //in this case I just close the activity, which causes Android
         //to go back to the previous activity.
@@ -59,10 +59,12 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.wizard_next_button:
-                wizard.getCurrentStep().done();
+                //Tell the wizard to go to next step
+                wizard.goNext();
                 break;
             case R.id.wizard_previous_button:
-                wizard.getCurrentStep().abort();
+                //Tell the wizard to go back one step
+                wizard.goBack();
                 break;
         }
         //Updating UI
