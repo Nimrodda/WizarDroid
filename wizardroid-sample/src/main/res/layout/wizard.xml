@@ -43,14 +43,14 @@ android:layout_height="fill_parent">
 
     <!--
             **********************************************************************
-            **You MUST have this FrameLayout as the container for wizard's steps**
+            **You MUST have this ViewPager as the container for wizard's steps  **
             **********************************************************************
     -->
-<FrameLayout
-    android:id="@+id/step_container"
+<android.support.v4.view.ViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/step_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
+    android:layout_height="match_parent"
     android:layout_above="@+id/horizontal_line"/>
 
 </RelativeLayout>

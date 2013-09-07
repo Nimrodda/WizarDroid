@@ -8,14 +8,10 @@ import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardFragment;
 
 /**
- * Base wizard class which uses the action bar to control the flow
- * of the wizard. The action bar is invalidated after each step, enabling
- * us to set buttons' labels according to the given step.
- * @see <a href="http://developer.android.com/guide/topics/ui/actionbar.html">How to use the action bar</a>
+ * Base wizard UI class with built-in layout.
  */
 public abstract class BaseWizard extends WizardFragment implements View.OnClickListener {
 
-    private static final String TAG = BaseWizard.class.getSimpleName();
     private Button nextButton;
     private Button previousButton;
 
@@ -67,7 +63,10 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
                 wizard.goBack();
                 break;
         }
-        //Updating UI
+    }
+
+    @Override
+    public void onStepChanged() {
         updateWizardControls();
     }
 

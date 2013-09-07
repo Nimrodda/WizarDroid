@@ -2,7 +2,7 @@ package org.codepond.android.wizardroid.persistence;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import org.codepond.android.wizardroid.WizardStep;
+import android.support.v4.app.Fragment;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -11,21 +11,21 @@ import java.util.Date;
 /**
  * This class implements {@link ContextManager} and uses Android
  * built-in Bundle and Fragment's arguments to pass data
- * between wizard steps.
+ * in the wizard.
  */
 public class ContextManagerImpl implements ContextManager {
 
     private Bundle context;
 
     @Override
-    public void loadStepContext(WizardStep step) {
+    public void loadStepContext(Fragment step) {
         Field[] fields = step.getClass().getDeclaredFields();
         //Check if arguments were already set on setup, otherwise creates a new bundle
         Bundle args = step.getArguments();
         if (args == null) {
             args = new Bundle();
         }
-        //Scan the step for fields annotaed with @ContextVariable and check if there is a value stored in the Wizard Context for the field name
+        //Scan the step for fields annotated with @ContextVariable and check if there is a value stored in the Wizard Context for the field name
         for (Field field : fields) {
             if (field.getAnnotation(ContextVariable.class) != null && context.containsKey(field.getName())) {
                 field.setAccessible(true);
@@ -74,7 +74,7 @@ public class ContextManagerImpl implements ContextManager {
     }
 
     @Override
-    public void persistStepContext(WizardStep step) {
+    public void persistStepContext(Fragment step) {
         //Scan the step for fields annotated with @ContextVariable
         Field[] fields = step.getClass().getDeclaredFields();
         for (Field field : fields) {
