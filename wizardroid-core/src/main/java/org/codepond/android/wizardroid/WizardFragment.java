@@ -36,18 +36,23 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
         //TODO: get rid of this dependency
         contextManager = new ContextManagerImpl();
         if (savedInstanceState != null) {
+            //Load pre-saved wizard context
             contextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
         }
         else {
+            //Initialize wizard context
             contextManager.setContext(new Bundle());
         }
         wizard = new Wizard(flow, contextManager, this, this.getActivity());
+        //Persist hosting activity/fragment fields to wizard context enabling easy data transfer between
+        //wizard host and the steps
+        contextManager.persistStepContext(this);
     }
 
     @Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.v(TAG, "Persisting current wizard step ID");
+        //Persist wizard context
         outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
 	}
 

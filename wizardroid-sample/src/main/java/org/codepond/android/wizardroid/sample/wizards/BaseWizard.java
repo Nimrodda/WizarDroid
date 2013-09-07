@@ -1,6 +1,7 @@
 package org.codepond.android.wizardroid.sample.wizards;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.*;
 import android.widget.Button;
 
@@ -8,12 +9,17 @@ import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardFragment;
 
 /**
- * Base wizard UI class with built-in layout.
+ * Base Wizard UI class with built-in layout.
+ * The layout uses two buttons 'Next' and 'Back' to control the wizard.
  */
 public abstract class BaseWizard extends WizardFragment implements View.OnClickListener {
 
     private Button nextButton;
     private Button previousButton;
+
+    private String nextButtonText;
+    private String finishButtonText;
+    private String backButtonText;
 
     /**
      * Empty constructor for Fragment
@@ -39,6 +45,7 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
     /**
      * Triggered when the wizard is completed.
      * Overriding this method is optional.
+     * Default implementation closes the wizard and goes back to the calling Activity.
      */
     @Override
     public void onWizardComplete() {
@@ -75,8 +82,33 @@ public abstract class BaseWizard extends WizardFragment implements View.OnClickL
      */
     private void updateWizardControls() {
         previousButton.setEnabled(!wizard.isFirstStep());
+        previousButton.setText(getBackButtonText());
         nextButton.setText(wizard.isLastStep()
-                ? R.string.action_finish
-                : R.string.action_next);
+                ? getFinishButtonText()
+                : getNextButtonText());
+    }
+
+    public String getNextButtonText() {
+        return TextUtils.isEmpty(nextButtonText) ? getResources().getString(R.string.action_next) : nextButtonText;
+    }
+
+    public void setNextButtonText(String nextButtonText) {
+        this.nextButtonText = nextButtonText;
+    }
+
+    public String getFinishButtonText() {
+        return TextUtils.isEmpty(finishButtonText) ? getResources().getString(R.string.action_finish) : finishButtonText;
+    }
+
+    public void setFinishButtonText(String finishButtonText) {
+        this.finishButtonText = finishButtonText;
+    }
+
+    public String getBackButtonText() {
+        return TextUtils.isEmpty(backButtonText) ? getResources().getString(R.string.action_previous) : backButtonText;
+    }
+
+    public void setBackButtonText(String backButtonText) {
+        this.backButtonText = backButtonText;
     }
 }
