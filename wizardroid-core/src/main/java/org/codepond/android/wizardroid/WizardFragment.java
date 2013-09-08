@@ -11,6 +11,9 @@ import org.codepond.android.wizardroid.persistence.ContextManagerImpl;
  * Base class for fragments that want to implement step-by-step wizard functionality.
  * Override {@link WizardFragment#onSetup()} to set up the wizard's flow
  * and optionally {@link WizardFragment#onWizardComplete()} ()} to handle wizard's finish event.
+ * Extend this class to implement your own custom wizard layout and user {@link Wizard} API to
+ * control the wizard. Typically, you'd call {@link Wizard#goNext()} and {@link Wizard#goBack()}
+ * from your controls onClick event to control the flow of the wizard.
  */
 public abstract class WizardFragment extends Fragment implements Wizard.WizardCallbacks {
 	private static final String TAG = WizardFragment.class.getSimpleName();

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import org.codepond.android.wizardroid.persistence.ContextManager;
 
@@ -23,7 +22,14 @@ public class Wizard {
      * a custom WizardFragment.
      */
     public static interface WizardCallbacks {
+        /**
+         * Event called when the wizard is completed
+         */
         public void onWizardComplete();
+
+        /**
+         * Event called after a step was changed
+         */
         public void onStepChanged();
     }
 

@@ -3,11 +3,12 @@ package org.codepond.android.wizardroid.sample.wizards;
 import org.codepond.android.wizardroid.WizardFlow;
 import org.codepond.android.wizardroid.sample.steps.FormStep1;
 import org.codepond.android.wizardroid.sample.steps.FormStep2;
+import org.codepond.android.wizardroid.ui.BasicWizard;
 
 /**
  * A sample to demonstrate a form in multiple steps.
  */
-public class FormWizard extends BaseWizard {
+public class FormWizard extends BasicWizard {
 
     public FormWizard() {
         super();

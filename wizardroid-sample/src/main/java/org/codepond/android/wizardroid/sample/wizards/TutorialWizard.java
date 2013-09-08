@@ -3,8 +3,9 @@ package org.codepond.android.wizardroid.sample.wizards;
 import org.codepond.android.wizardroid.WizardFlow;
 import org.codepond.android.wizardroid.sample.steps.TutorialStep1;
 import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
+import org.codepond.android.wizardroid.ui.BasicWizard;
 
-public class TutorialWizard extends BaseWizard {
+public class TutorialWizard extends BasicWizard {
 
     public TutorialWizard() {
         super();

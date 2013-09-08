@@ -18,7 +18,7 @@ android:layout_height="fill_parent">
     android:layout_alignParentBottom="true"
     >
     <Button
-        android:id="@+id/wizard_previous_button"
+        android:id="@id/wizard_previous_button"
         android:text="@string/action_previous"
         android:enabled="false"
         android:layout_width="0dp"
@@ -32,7 +32,7 @@ android:layout_height="fill_parent">
         android:background="@android:color/darker_gray"
         />
     <Button
-        android:id="@+id/wizard_next_button"
+        android:id="@id/wizard_next_button"
         android:text="@string/action_next"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
