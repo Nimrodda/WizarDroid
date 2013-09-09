@@ -42,8 +42,10 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         View wizardLayout = inflater.inflate(R.layout.wizard, container, false);
         nextButton = (Button) wizardLayout.findViewById(R.id.wizard_next_button);
         nextButton.setOnClickListener(this);
+        nextButton.setText(getNextButtonText());
         previousButton = (Button) wizardLayout.findViewById(R.id.wizard_previous_button);
         previousButton.setOnClickListener(this);
+        previousButton.setText(getBackButtonText());
 
         return wizardLayout;
     }

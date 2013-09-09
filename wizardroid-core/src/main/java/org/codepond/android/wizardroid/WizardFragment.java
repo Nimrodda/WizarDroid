@@ -1,8 +1,12 @@
 package org.codepond.android.wizardroid;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.codepond.android.wizardroid.persistence.ContextManager;
 import org.codepond.android.wizardroid.persistence.ContextManagerImpl;
@@ -28,14 +32,19 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         Log.i(TAG, "Loading wizard data");
         flow = onSetup();
         if (flow == null) {
             throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardFragment#onSetup " +
                     "and use WizardFlow.Builder to create the Wizard's flow followed by WizardFragment#super.onSetup(flow)");
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         //TODO: get rid of this dependency
         contextManager = new ContextManagerImpl();
         if (savedInstanceState != null) {
