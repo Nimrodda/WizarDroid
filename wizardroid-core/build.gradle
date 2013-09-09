@@ -9,7 +9,7 @@ buildscript {
 apply plugin: 'android-library'
 apply plugin: 'maven'
 
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 group = "org.codepond.android.wizardroid"
 
 repositories {
