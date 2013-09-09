@@ -42,10 +42,10 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         View wizardLayout = inflater.inflate(R.layout.wizard, container, false);
         nextButton = (Button) wizardLayout.findViewById(R.id.wizard_next_button);
         nextButton.setOnClickListener(this);
-        nextButton.setText(getNextButtonText());
+        nextButton.setText(getNextButtonLabel());
         previousButton = (Button) wizardLayout.findViewById(R.id.wizard_previous_button);
         previousButton.setOnClickListener(this);
-        previousButton.setText(getBackButtonText());
+        previousButton.setText(getBackButtonLabel());
 
         return wizardLayout;
     }
@@ -92,17 +92,17 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      */
     private void updateWizardControls() {
         previousButton.setEnabled(!wizard.isFirstStep());
-        previousButton.setText(getBackButtonText());
+        previousButton.setText(getBackButtonLabel());
         nextButton.setText(wizard.isLastStep()
                 ? getFinishButtonText()
-                : getNextButtonText());
+                : getNextButtonLabel());
     }
 
     /**
      * Get 'Next' button label
      * @return Default label 'Next' or user defined label
      */
-    public String getNextButtonText() {
+    public String getNextButtonLabel() {
         return TextUtils.isEmpty(nextButtonText) ? getResources().getString(R.string.action_next) : nextButtonText;
     }
 
@@ -134,7 +134,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * Get 'Back' button label
      * @return Default label 'Back' or user defined label
      */
-    public String getBackButtonText() {
+    public String getBackButtonLabel() {
         return TextUtils.isEmpty(backButtonText) ? getResources().getString(R.string.action_previous) : backButtonText;
     }
 
