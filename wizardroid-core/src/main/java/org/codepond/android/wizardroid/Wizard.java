@@ -147,21 +147,17 @@ public class Wizard {
 	 */
 	public void goBack() {
         Log.v(TAG, "goBack() executed");
-        getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
-        if (isFirstStep()) {
-            throw new RuntimeException("Attempt to go back one step failed. Current step is the first step in the wizard.");
-        }
-        else {
+        if (!isFirstStep()) {
+            getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
             //Check if the user dragged the page or pressed a button.
             //If the page was dragged then the ViewPager will handle the current step.
             //Otherwise, set the current step programmatically.
             if (!fingerSlide) {
                 setCurrentStep(mPager.getCurrentItem() - 1);
             }
+            //Notify the hosting Fragment/Activity that the step has changed so it might want to update the controls accordingly
+            callbacks.onStepChanged();
         }
-
-        //Notify the hosting Fragment/Activity that the step has changed so it might want to update the controls accordingly
-        callbacks.onStepChanged();
 	}
 	
 	/**
