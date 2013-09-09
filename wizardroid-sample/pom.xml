@@ -22,10 +22,10 @@
 			<groupId>org.codepond.android.wizardroid</groupId>
 			<artifactId>wizardroid-core</artifactId>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>support-v4</artifactId>
-		</dependency>
+		</dependency>-->
     </dependencies>
 
     <build>
@@ -35,9 +35,9 @@
                 <artifactId>android-maven-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
-                    <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
+                    <androidManifestFile>src/main/AndroidManifest.xml</androidManifestFile>
                     <assetsDirectory>${project.basedir}/assets</assetsDirectory>
-                    <resourceDirectory>${project.basedir}/res</resourceDirectory>
+                    <resourceDirectory>src/main/res</resourceDirectory>
                     <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
                         <platform>${platform.level}</platform>

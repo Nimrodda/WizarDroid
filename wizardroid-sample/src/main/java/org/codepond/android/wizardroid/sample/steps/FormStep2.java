@@ -12,6 +12,12 @@ import org.codepond.android.wizardroid.WizardStep;
 
 public class FormStep2 extends WizardStep {
 
+    /**
+     * Tell WizarDroid that these are context variables.
+     * These values will be automatically bound to any field annotated with {@link ContextVariable}.
+     * NOTE: Context Variable names are unique and therefore must
+     * have the same name and type wherever you wish to use them.
+     */
     @ContextVariable
     private String firstname;
     @ContextVariable
@@ -30,6 +36,8 @@ public class FormStep2 extends WizardStep {
         TextView firstnameTv = (TextView) v.findViewById(R.id.firstname);
         TextView lastnameTv = (TextView) v.findViewById(R.id.lastname);
 
+        //WizarDroid will automatically inject the values for these fields
+        //so we can simply set the text views
         firstnameTv.setText(firstname);
         lastnameTv.setText(lastname);
 

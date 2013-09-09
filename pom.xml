@@ -54,11 +54,11 @@
 				<artifactId>wizardroid-core</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
-			<dependency>
+			<!--<dependency>
 				<groupId>com.google.android</groupId>
 				<artifactId>support-v4</artifactId>
 				<version>r7</version>
-			</dependency>
+			</dependency>-->
 
 			<!-- Test dependencies -->
 			<dependency>

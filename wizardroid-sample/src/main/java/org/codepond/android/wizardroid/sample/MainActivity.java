@@ -13,7 +13,7 @@ import org.codepond.android.wizardroid.sample.wizards.TutorialWizard;
 
 /**
  * The launchpad activity for this sample project. This activity launches other activities that
- * demonstrate implementations of common animations.
+ * demonstrate implementations of wizards.
  */
 public class MainActivity extends ListActivity {
     /**
@@ -48,8 +48,8 @@ public class MainActivity extends ListActivity {
 
         // Instantiate the list of samples.
         mSamples = new Sample[] {
-                new Sample(R.string.title_tutorial_wizard, TutorialWizard.class),
-                new Sample(R.string.title_form_wizard, FormWizard.class)
+                new Sample(R.string.title_tutorial_wizard, TutorialActivity.class),
+                new Sample(R.string.title_form_wizard, FormActivity.class)
         };
 
         setListAdapter(new ArrayAdapter<Sample>(this,

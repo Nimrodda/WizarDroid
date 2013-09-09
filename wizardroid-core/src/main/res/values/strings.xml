@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_previous">Back</string>
+    <string name="action_next">Next</string>
+    <string name="action_finish">Finish</string>
+</resources>

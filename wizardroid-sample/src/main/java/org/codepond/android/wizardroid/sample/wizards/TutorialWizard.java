@@ -1,24 +1,26 @@
 package org.codepond.android.wizardroid.sample.wizards;
 
-import org.codepond.android.wizardroid.R;
 import org.codepond.android.wizardroid.WizardFlow;
+import org.codepond.android.wizardroid.layouts.BasicWizardLayout;
 import org.codepond.android.wizardroid.sample.steps.TutorialStep1;
 import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
 
-public class TutorialWizard extends BaseWizard {
+public class TutorialWizard extends BasicWizardLayout {
+
+    /**
+     * Note that we inherit from {@link android.support.v4.app.Fragment} and therefore must have an empty constructor
+     */
+    public TutorialWizard() {
+        super();
+    }
 
     //You must override this method and create a wizard flow by
     //using WizardFlow.Builder as shown in this example
     @Override
-    public void onSetup(WizardFlow flow) {
-        flow = new WizardFlow.Builder()
-                .setActivity(this)                      //First, set the hosting activity for the wizard
-                .setContainerId(R.id.step_container)    //then set the layout container for the steps.
+    public WizardFlow onSetup() {
+        return new WizardFlow.Builder()
                 .addStep(TutorialStep1.class)           //Add your steps in the order you want them
                 .addStep(TutorialStep2.class)           //to appear and eventually call create()
                 .create();                              //to create the wizard flow.
-
-        //Call the super method using the newly created flow
-        super.onSetup(flow);
     }
 }

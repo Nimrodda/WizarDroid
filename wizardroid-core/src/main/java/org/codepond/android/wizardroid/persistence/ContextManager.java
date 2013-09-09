@@ -1,6 +1,8 @@
 package org.codepond.android.wizardroid.persistence;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+
 import org.codepond.android.wizardroid.WizardStep;
 
 /**
@@ -8,8 +10,8 @@ import org.codepond.android.wizardroid.WizardStep;
  * used to pass data between steps.
  */
 public interface ContextManager {
-    void loadStepContext(WizardStep step);
-    void persistStepContext(WizardStep step);
+    void loadStepContext(Fragment step);
+    void persistStepContext(Fragment step);
     Bundle getContext();
     void setContext(Bundle context);
 }
