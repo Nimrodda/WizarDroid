@@ -1,12 +1,15 @@
 package org.codepond.android.wizardroid.sample.wizards;
 
 import org.codepond.android.wizardroid.WizardFlow;
+import org.codepond.android.wizardroid.layouts.BasicWizardLayout;
 import org.codepond.android.wizardroid.sample.steps.TutorialStep1;
 import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
-import org.codepond.android.wizardroid.ui.BasicWizard;
 
-public class TutorialWizard extends BasicWizard {
+public class TutorialWizard extends BasicWizardLayout {
 
+    /**
+     * Note that we inherit from {@link android.support.v4.app.Fragment} and therefore must have an empty constructor
+     */
     public TutorialWizard() {
         super();
     }

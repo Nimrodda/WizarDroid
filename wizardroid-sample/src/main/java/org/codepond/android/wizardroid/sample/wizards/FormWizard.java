@@ -1,14 +1,26 @@
 package org.codepond.android.wizardroid.sample.wizards;
 
 import org.codepond.android.wizardroid.WizardFlow;
+import org.codepond.android.wizardroid.layouts.BasicWizardLayout;
+import org.codepond.android.wizardroid.persistence.ContextVariable;
 import org.codepond.android.wizardroid.sample.steps.FormStep1;
 import org.codepond.android.wizardroid.sample.steps.FormStep2;
-import org.codepond.android.wizardroid.ui.BasicWizard;
 
 /**
  * A sample to demonstrate a form in multiple steps.
  */
-public class FormWizard extends BasicWizard {
+public class FormWizard extends BasicWizardLayout {
+
+    /**
+     * Tell WizarDroid that these are context variables and set default values.
+     * These values will be automatically bound to any field annotated with {@link ContextVariable}.
+     * NOTE: Context Variable names are unique and therefore must
+     * have the same name and type wherever you wish to use them.
+     */
+    @ContextVariable
+    private String firstname = "WizarDroid";
+    @ContextVariable
+    private String lastname = "CondPond.org";
 
     public FormWizard() {
         super();

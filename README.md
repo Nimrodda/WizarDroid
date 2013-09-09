@@ -1,14 +1,16 @@
 Overview
 --------
 
-WizarDroid is a lightweight Android library, developed by CodePond.org, that addresses a feature that Android is surprisingly missing, Wizards. It is built on top of Android's Fragments, using FragmentManager to dynamically change the view. Implementation is done mainly by extending __WizardFragment__ class.
+WizarDroid is a lightweight Android library, developed by CodePond.org, that addresses a feature that Android is surprisingly missing, Wizards. It is built on top of Android's ViewPager to enable slide animation and touch functionality.
+Implementation is done mainly by extending __BasicWizardLayout__ class.
 
 Key advantages:
 
+* Built-in basic wizard layout with paging and slide animation
+* Wizard context for persisting data in the wizard
 * Compatible with other libraries such as [ActionBarSherlock](http://actionbarsherlock.com/)
 * Support for nested fragments
 * Wizard's flow is defined in one place and can be maintained easily
-* Step context is persistent and passed between steps automatically using reflection
 * Simple API for controlling wizard's flow in runtime 
 
 

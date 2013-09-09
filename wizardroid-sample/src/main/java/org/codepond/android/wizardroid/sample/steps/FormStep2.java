@@ -12,7 +12,12 @@ import org.codepond.android.wizardroid.WizardStep;
 
 public class FormStep2 extends WizardStep {
 
-    //NOTE: field names MUST be identical to previous step's fields names
+    /**
+     * Tell WizarDroid that these are context variables.
+     * These values will be automatically bound to any field annotated with {@link ContextVariable}.
+     * NOTE: Context Variable names are unique and therefore must
+     * have the same name and type wherever you wish to use them.
+     */
     @ContextVariable
     private String firstname;
     @ContextVariable

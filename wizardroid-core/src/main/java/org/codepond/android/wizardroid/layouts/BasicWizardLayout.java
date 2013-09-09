@@ -1,4 +1,4 @@
-package org.codepond.android.wizardroid.ui;
+package org.codepond.android.wizardroid.layouts;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,7 +18,7 @@ import org.codepond.android.wizardroid.WizardFragment;
  * and optionally {@link WizardFragment#onWizardComplete()} to handle wizard's finish event.
 
  */
-public abstract class BasicWizard extends WizardFragment implements View.OnClickListener {
+public abstract class BasicWizardLayout extends WizardFragment implements View.OnClickListener {
 
     private Button nextButton;
     private Button previousButton;
@@ -31,7 +31,7 @@ public abstract class BasicWizard extends WizardFragment implements View.OnClick
      * Empty constructor for Fragment
      * You must have an empty constructor according to {@link #Fragment} documentation
      */
-    public BasicWizard() {
+    public BasicWizardLayout() {
         super();
     }
     /**
