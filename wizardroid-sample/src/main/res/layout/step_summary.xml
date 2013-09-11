@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/form_summary"
-            android:text="@string/sample_form_summary"
-            android:textSize="20dp"
-            android:layout_marginTop="10dp"/>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/form_summary"
+        android:text="@string/sample_form_summary"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp" />
+
     <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/firstname"/>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:id="@+id/firstname"
+        android:layout_marginTop="40dp" />
+
     <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lastname"/>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:id="@+id/lastname"
+        android:layout_marginTop="20dp" />
 </LinearLayout>
