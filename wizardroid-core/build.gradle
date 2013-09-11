@@ -1,24 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-    }
-}
 apply plugin: 'android-library'
 apply plugin: 'maven'
-
-version = "1.0.0"
-group = "org.codepond.android.wizardroid"
-
-repositories {
-    mavenCentral()
-}
+apply plugin: 'signing'
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "17.0.0"
+    buildToolsVersion "18.0.1"
 
     defaultConfig {
         minSdkVersion 9
@@ -36,11 +22,22 @@ configurations {
     }
 }
 
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
 uploadArchives {
 	configuration = configurations.archives
+
     repositories {
         mavenDeployer {
-			repository(url: sonatypeRepoSnapshots) {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            //Sonatype related variables are defined in ~/.gradle/gradle.properties
+            repository(url: isReleaseVersion ? sonatypeRepoStaging : sonatypeRepoSnapshots) {
             authentication(userName: sonatypeUsername,
                     password: sonatypePassword)
 			}
@@ -63,6 +60,14 @@ uploadArchives {
 						distribution 'repo'
 					}
 				}
+
+                developers {
+                    developer {
+                        id 'nimrodda'
+                        name 'Nimrod Dayan'
+                        email 'feedback@codepond.org'
+                    }
+                }
 			}
         }
     }
