@@ -9,7 +9,7 @@ buildscript {
 
 allprojects {
     version = "1.0.0"
-    group = "org.codepond.android.wizardroid"
+    group = "org.codepond"
 }
 
 subprojects {

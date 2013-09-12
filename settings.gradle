@@ -1,2 +1,2 @@
-include ':wizardroid-core'
+include ':wizardroid'
 include ':wizardroid-sample'

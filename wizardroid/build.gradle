@@ -1,0 +1,85 @@
+apply plugin: 'android-library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion "18.0.1"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 18
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:18.0.0'
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+	configuration = configurations.archives
+
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+			pom.project {
+				name 'WizarDroid'
+				description 'Lightweight Android library for creating step by step wizards'
+				url 'http://wizardroid.codepond.org'
+
+				scm {
+					url 'http://www.github.com/nimrodda/wizardroid'
+					connection 'scm:git://github.com/Nimrodda/WizarDroid.git'
+					developerConnection 'scm:git://github.com/Nimrodda/WizarDroid.git'
+				}
+
+				licenses {
+					license {
+						name 'The MIT License (MIT)'
+						url 'https://raw.github.com/Nimrodda/WizarDroid/master/license'
+						distribution 'repo'
+					}
+				}
+
+                developers {
+                    developer {
+                        id 'nimrodda'
+                        name 'Nimrod Dayan'
+                        email 'feedback@codepond.org'
+                    }
+                }
+
+                organization {
+                    name 'CodePond.org'
+                    url 'http://www.codepond.org'
+                }
+
+                issueManagement {
+                    system 'GitHub Issues'
+                    url 'https://github.com/nimrodda/wizardroid/issues'
+                }
+                
+                parent {
+                    groupId 'org.sonatype.oss'
+                    artifactId 'oss-parent'
+                    version 7
+                }
+			}
+        }
+    }
+}
