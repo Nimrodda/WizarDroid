@@ -1,4 +1,4 @@
-package org.codepond.android.wizardroid;
+package org.codepond.wizardroid;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import org.codepond.android.wizardroid.persistence.ContextManager;
+import org.codepond.wizardroid.persistence.ContextManager;
 
 /**
  * The engine of the Wizard. This class controls the flow of the wizard
@@ -47,7 +47,7 @@ public class Wizard {
     /**
      * Constructor for Wizard
      * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
-     * @param contextManager ContextManager instance would normally be {@link org.codepond.android.wizardroid.persistence.ContextManagerImpl}
+     * @param contextManager ContextManager instance would normally be {@link org.codepond.wizardroid.persistence.ContextManagerImpl}
      * @param callbacks implementation of WizardCallbacks
      * @param activity the hosting activity
      */

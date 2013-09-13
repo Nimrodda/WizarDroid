@@ -1,9 +1,9 @@
-package org.codepond.android.wizardroid;
+package org.codepond.wizardroid;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import org.codepond.android.wizardroid.persistence.ContextVariable;
+import org.codepond.wizardroid.persistence.ContextVariable;
 
 import java.lang.reflect.Field;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package org.codepond.android.wizardroid.persistence;
+package org.codepond.wizardroid.persistence;
 
 import android.os.Bundle;
 import android.os.Parcelable;

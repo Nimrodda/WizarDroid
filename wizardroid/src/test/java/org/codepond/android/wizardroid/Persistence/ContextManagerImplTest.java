@@ -1,9 +1,9 @@
 package org.codepond.android.wizardroid.Persistence;
 
 import android.os.Bundle;
-import org.codepond.android.wizardroid.TestStep;
-import org.codepond.android.wizardroid.persistence.ContextManager;
-import org.codepond.android.wizardroid.persistence.ContextManagerImpl;
+import org.codepond.wizardroid.TestStep;
+import org.codepond.wizardroid.persistence.ContextManager;
+import org.codepond.wizardroid.persistence.ContextManagerImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import org.robolectric.RobolectricTestRunner;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Time;
 import java.util.Date;
 
 @RunWith(RobolectricTestRunner.class)

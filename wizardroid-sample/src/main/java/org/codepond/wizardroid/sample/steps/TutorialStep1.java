@@ -1,13 +1,12 @@
-package org.codepond.android.wizardroid.sample.steps;
+package org.codepond.wizardroid.sample.steps;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import org.codepond.android.wizardroid.R;
-import org.codepond.android.wizardroid.WizardStep;
+import org.codepond.wizardroid.WizardStep;
+import org.codepond.wizardroid.sample.R;
 
 public class TutorialStep1 extends WizardStep {
 

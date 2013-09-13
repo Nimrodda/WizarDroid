@@ -1,7 +1,11 @@
 package org.codepond.android.wizardroid;
 
 import android.support.v4.app.FragmentActivity;
-import org.codepond.android.wizardroid.persistence.ContextManager;
+
+import org.codepond.wizardroid.Wizard;
+import org.codepond.wizardroid.WizardFlow;
+import org.codepond.wizardroid.WizardStep;
+import org.codepond.wizardroid.persistence.ContextManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +21,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 
 /**
- * JUnit test class for {@link Wizard}
+ * JUnit test class for {@link org.codepond.wizardroid.Wizard}
  */
 @RunWith(RobolectricTestRunner.class)
 public class WizardTest {

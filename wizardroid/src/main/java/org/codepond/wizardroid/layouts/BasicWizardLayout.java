@@ -1,12 +1,12 @@
-package org.codepond.android.wizardroid.layouts;
+package org.codepond.wizardroid.layouts;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.Button;
 
-import org.codepond.android.wizardroid.R;
-import org.codepond.android.wizardroid.WizardFragment;
+import org.codepond.wizardroid.R;
+import org.codepond.wizardroid.WizardFragment;
 
 /**
  * Basic Wizard UI class with built-in layout.

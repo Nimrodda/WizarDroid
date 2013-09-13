@@ -1,9 +1,7 @@
-package org.codepond.android.wizardroid.persistence;
+package org.codepond.wizardroid.persistence;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-import org.codepond.android.wizardroid.WizardStep;
 
 /**
  * This interface defines the wizard context manager API

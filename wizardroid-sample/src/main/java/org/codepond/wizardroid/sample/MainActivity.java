@@ -1,4 +1,4 @@
-package org.codepond.android.wizardroid.sample;
+package org.codepond.wizardroid.sample;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import org.codepond.android.wizardroid.R;
-import org.codepond.android.wizardroid.sample.wizards.FormWizard;
-import org.codepond.android.wizardroid.sample.wizards.TutorialWizard;
 
 /**
  * The launchpad activity for this sample project. This activity launches other activities that

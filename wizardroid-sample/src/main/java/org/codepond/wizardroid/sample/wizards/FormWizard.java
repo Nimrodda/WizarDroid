@@ -1,10 +1,10 @@
-package org.codepond.android.wizardroid.sample.wizards;
+package org.codepond.wizardroid.sample.wizards;
 
-import org.codepond.android.wizardroid.WizardFlow;
-import org.codepond.android.wizardroid.layouts.BasicWizardLayout;
-import org.codepond.android.wizardroid.persistence.ContextVariable;
-import org.codepond.android.wizardroid.sample.steps.FormStep1;
-import org.codepond.android.wizardroid.sample.steps.FormStep2;
+import org.codepond.wizardroid.WizardFlow;
+import org.codepond.wizardroid.layouts.BasicWizardLayout;
+import org.codepond.wizardroid.persistence.ContextVariable;
+import org.codepond.wizardroid.sample.steps.FormStep1;
+import org.codepond.wizardroid.sample.steps.FormStep2;
 
 /**
  * A sample to demonstrate a form in multiple steps.

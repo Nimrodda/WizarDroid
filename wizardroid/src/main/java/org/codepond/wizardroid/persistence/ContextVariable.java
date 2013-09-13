@@ -1,4 +1,4 @@
-package org.codepond.android.wizardroid.persistence;
+package org.codepond.wizardroid.persistence;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,5 +1,6 @@
 package org.codepond.android.wizardroid;
 
+import org.codepond.wizardroid.WizardFlow;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

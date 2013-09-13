@@ -1,9 +1,9 @@
-package org.codepond.android.wizardroid.sample.wizards;
+package org.codepond.wizardroid.sample.wizards;
 
-import org.codepond.android.wizardroid.WizardFlow;
-import org.codepond.android.wizardroid.layouts.BasicWizardLayout;
-import org.codepond.android.wizardroid.sample.steps.TutorialStep1;
-import org.codepond.android.wizardroid.sample.steps.TutorialStep2;
+import org.codepond.wizardroid.WizardFlow;
+import org.codepond.wizardroid.layouts.BasicWizardLayout;
+import org.codepond.wizardroid.sample.steps.TutorialStep1;
+import org.codepond.wizardroid.sample.steps.TutorialStep2;
 
 public class TutorialWizard extends BasicWizardLayout {
 
