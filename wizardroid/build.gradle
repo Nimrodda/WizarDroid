@@ -17,6 +17,7 @@ dependencies {
 }
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+boolean hasCredentials = hasProperty('sonatypeUsername') && hasProperty('sonatypeUsername')
 
 signing {
     required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
@@ -31,12 +32,17 @@ uploadArchives {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
+                if (hasCredentials) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
             }
 
             snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
+                if (hasCredentials) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
             }
+            
 			pom.project {
 				name 'WizarDroid'
 				description 'Lightweight Android library for creating step by step wizards'

@@ -8,6 +8,30 @@ android {
         minSdkVersion 14
         targetSdkVersion 18
     }
+
+    signingConfigs {
+	    release 
+	}
+
+	buildTypes {
+	    release {
+	        signingConfig signingConfigs.release
+	    }
+	}
+
+	if (project.hasProperty('keystoreFile') &&
+	        project.hasProperty('keystorePassword') &&
+	        project.hasProperty('keyPassword') &&
+	        project.hasProperty('keyAlias')) {
+	    android.signingConfigs.release.storeFile = file(keystoreFile)
+	    android.signingConfigs.release.storePassword = keystorePassword
+	    android.signingConfigs.release.keyPassword = keyPassword
+	    android.signingConfigs.release.keyAlias = keyAlias
+	} 
+
+	else {
+	    buildTypes.release.signingConfig = null
+	}
 }
 
 dependencies {
