@@ -157,6 +157,15 @@ aside a.button {
   font-size: 21px;
 }
 
+aside a.playstore {
+  width: 138px;
+  height: 100px;
+  padding-left: 64px;
+  display: block;
+  background: transparent url(../images/Google-Play-Store.jpeg) 0 0 no-repeat;
+  margin-bottom: 20px;
+  font-size: 21px;
+}
 code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #222;
