@@ -13,7 +13,8 @@ import org.codepond.wizardroid.persistence.ContextManager;
 /**
  * The engine of the Wizard. This class controls the flow of the wizard
  * and is using {@link ViewPager} under the hood. You would normally want to
- * extend {@link WizardFragment} instead of using this class directly. Use this
+ * extend {@link WizardFragment} instead of using this class directly and make calls to the wizard API
+ * via {@link org.codepond.wizardroid.WizardFragment#wizard} field. Use this
  * class only if you wish to create a custom WizardFragment to control the wizard.
  */
 public class Wizard {

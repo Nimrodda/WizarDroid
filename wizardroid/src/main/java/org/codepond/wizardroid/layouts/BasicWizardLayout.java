@@ -16,6 +16,8 @@ import org.codepond.wizardroid.WizardFragment;
  * Otherwise, extend {@link WizardFragment} and implement a custom wizard layout.
  * Override {@link WizardFragment#onSetup()} to set up the wizard's flow
  * and optionally {@link WizardFragment#onWizardComplete()} to handle wizard's finish event.
+ * Note that button labels are changeable by calling {@link #setNextButtonText(String)}, {@link #setBackButtonText(String)} and
+ * {@link #setFinishButtonText(String)}.
 
  */
 public abstract class BasicWizardLayout extends WizardFragment implements View.OnClickListener {
@@ -35,7 +37,8 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         super();
     }
     /**
-     * Setting common layout for all wizards
+     * Setting the layout for this basic wizard layout and hooking up wizard controls to their
+     * OnClickListeners.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     }
 
     /**
-     * Event triggered after a step was changed
+     * Event triggered after a step was changed, updating the button labels accordingly
      */
     @Override
     public void onStepChanged() {

@@ -9,7 +9,8 @@ import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
- * Base class for a wizard's step.
+ * Base class for a wizard's step. Extend this class to create a step and override {@link #onExit(int)}
+ * to handle input and do tasks before the wizard changes the current step.
  * As with regular {@link Fragment} each inherited class must have an empty constructor.
  */
 public abstract class WizardStep extends Fragment {
@@ -27,6 +28,7 @@ public abstract class WizardStep extends Fragment {
     /**
      * Called when the wizard is about to go to the next step or
      * the previous step. Override this method to handle input from the step.
+     * Possible exit codes are {@link #EXIT_NEXT} and {@link #EXIT_PREVIOUS}.
      * @param exitCode Code indicating whether the wizard is going to the next or previous step. The value would either be
      *                 WizardStep.EXIT_NEXT when wizard is about to go to the next step or
      *                 WizardStep.EXIT_PREVIOUS when wizard is about to go to the previous step.
@@ -34,6 +36,10 @@ public abstract class WizardStep extends Fragment {
     public void onExit(int exitCode) {
     }
 
+    /**
+     * IMPORTANT: This method is overridden to bind the wizard context to the step's fields.
+     * Make sure to call super.onAttach(activity), if you override this method in your step class.
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

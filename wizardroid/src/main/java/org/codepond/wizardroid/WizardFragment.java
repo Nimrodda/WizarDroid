@@ -15,6 +15,10 @@ import org.codepond.wizardroid.persistence.ContextManagerImpl;
  * Extend this class to implement your own custom wizard layout and user {@link Wizard} API to
  * control the wizard. Typically, you'd call {@link Wizard#goNext()} and {@link Wizard#goBack()}
  * from your controls onClick event to control the flow of the wizard.
+ * The implementation takes care of persisting the instance of the fragment and therefore the wizard context.
+ * Keep in mind that if for some reason you are not able to extend this class and have to implement your
+ * own, then wizard context persistence is totally up to you by implementing {@link ContextManager} and passing
+ * an instance of it when you construct {@link Wizard}.
  */
 public abstract class WizardFragment extends Fragment implements Wizard.WizardCallbacks {
 	private static final String TAG = WizardFragment.class.getSimpleName();
