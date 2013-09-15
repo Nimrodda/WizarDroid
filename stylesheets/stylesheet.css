@@ -166,6 +166,16 @@ aside a.playstore {
   margin-bottom: 20px;
   font-size: 21px;
 }
+
+aside a.travis-ci {
+  width: 138px;
+  height: 100px;
+  padding-left: 64px;
+  display: block;
+  background: transparent url(https://travis-ci.org/Nimrodda/WizarDroid.png?branch=develop) 0 0 no-repeat;
+  margin-bottom: 20px;
+  font-size: 21px;
+}
 code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #222;
