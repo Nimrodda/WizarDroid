@@ -30,6 +30,14 @@ Build and Documentation
 
 For more information refer to the [Wiki pages on github](https://github.com/Nimrodda/WizarDroid/wiki) or check out the bundled sample project.
 
+Contribute
+----------
+
+Right now the sample app is very poor. I'm looking for extra hands on that.
+Please send me an email if you wish to help me with it.
+Otherwise if you wish to contribute, fork and create a pull request.
+Thanks!
+
 Credits
 -------
 WizarDroid is developed and maintained by Nimrod Dayan ([CodePond.org](http://www.codepond.org)).
