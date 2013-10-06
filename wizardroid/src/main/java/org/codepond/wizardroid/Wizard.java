@@ -41,7 +41,6 @@ public class Wizard {
     private final WizardCallbacks callbacks;
     private final ViewPager mPager;
 
-    private WizardStep[] wizardStepInstances;
     private boolean fingerSlide;
 
 
@@ -182,7 +181,7 @@ public class Wizard {
 	 * @return WizardStep the current WizardStep instance
 	 */
     public WizardStep getCurrentStep() {
-        return wizardStepInstances[mPager.getCurrentItem()];
+        return ((WizardPagerAdapter)mPager.getAdapter()).getPrimaryItem();
 	}
 	
 	/**
@@ -207,14 +206,12 @@ public class Wizard {
 
         public WizardPagerAdapter(FragmentManager fm) {
             super(fm);
-            wizardStepInstances = new WizardStep[getCount()];
         }
 
         @Override
         public Fragment getItem(int i) {
             try {
                 WizardStep step = wizardFlow.getSteps().get(i).newInstance();
-                wizardStepInstances[i] = step;
                 contextManager.loadStepContext(step);
                 Log.v(TAG, "context loaded for " + step.toString());
                 return step;
@@ -245,6 +242,10 @@ public class Wizard {
         @Override
         public int getCount() {
             return wizardFlow.getSteps().size();
+        }
+
+        public WizardStep getPrimaryItem() {
+            return (WizardStep) mPrimaryItem;
         }
     }
 }
