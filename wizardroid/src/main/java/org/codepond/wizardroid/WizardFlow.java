@@ -23,8 +23,10 @@ public class WizardFlow {
 	}
 
 	/**
-	 * Builder for {@link WizardFlow}. Use this class to build an instance of WizardFlow and 
-	 * eventually call {@link WizardFlow.Builder#create()} to create the instance.
+	 * Builder for {@link WizardFlow}. Use this class to build an instance of WizardFlow.
+     * You need to use this class in your wizard's {@link WizardFragment#onSetup()} to return an instance of WizardFlow.
+     * Call {@link #addStep(Class)} to add steps to the flow, keeping in mind that the order you the steps
+     * will be the order the wizard will display them. Eventually call {@link WizardFlow.Builder#create()} to create the instance.
 	 */
 	public static class Builder {
 
