@@ -8,6 +8,11 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.squareup.otto.Subscribe;
+
+import org.codepond.wizardroid.infrastructure.BusProvider;
+import org.codepond.wizardroid.infrastructure.Disposable;
+import org.codepond.wizardroid.infrastructure.events.StepCompletedEvent;
 import org.codepond.wizardroid.persistence.ContextManager;
 
 /**
@@ -17,8 +22,7 @@ import org.codepond.wizardroid.persistence.ContextManager;
  * via {@link org.codepond.wizardroid.WizardFragment#wizard} field. Use this
  * class only if you wish to create a custom WizardFragment to control the wizard.
  */
-public class Wizard {
-
+public class Wizard implements Disposable {
     /**
      * Interface for key wizard events. Implement this interface if you wish to create
      * a custom WizardFragment.
@@ -115,9 +119,33 @@ public class Wizard {
 
             }
         });
+
+        BusProvider.getInstance().register(this);
 	}
 
-	/**
+    @Override
+    public void dispose() {
+        BusProvider.getInstance().unregister(this);
+        wizardFlow.dispose();
+    }
+
+    /**
+     * Otto event which is triggered when the step is marked as completed or incomplete
+     */
+    @Subscribe
+    public final void onStepCompletedEvent(StepCompletedEvent event) {
+        int stepPosition = getCurrentStepPosition();
+
+        //Check if the step is already marked as completed/incomplete
+        if (wizardFlow.isStepCompleted(stepPosition) != event.isStepCompleted()) {
+            wizardFlow.setStepCompleted(stepPosition, event.isStepCompleted());
+            mPager.getAdapter().notifyDataSetChanged();
+            //Refresh the UI
+            callbacks.onStepChanged();
+        }
+    }
+
+    /**
 	 * Advance the wizard to the next step
 	 */
 	public void goNext() {
@@ -189,7 +217,7 @@ public class Wizard {
 	 * @return boolean representing the result of the check
 	 */
     public boolean isLastStep() {
-		return mPager.getCurrentItem() == wizardFlow.getSteps().size() - 1;
+		return mPager.getCurrentItem() == wizardFlow.getStepsCount() - 1;
 	}
 	
 	/**
@@ -200,6 +228,17 @@ public class Wizard {
 		return mPager.getCurrentItem() == 0;
 	}
 
+    /**
+     * Check if the wizard can proceed to the next step by verifying that the current step
+     * is completed
+     */
+    public boolean canGoNext() {
+        return wizardFlow.isStepCompleted(getCurrentStepPosition());
+    }
+
+    /**
+     * Custom adapter for the ViewPager
+     */
     public class WizardPagerAdapter extends FragmentStatePagerAdapter {
 
         private Fragment mPrimaryItem;

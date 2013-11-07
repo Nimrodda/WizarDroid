@@ -3,6 +3,10 @@ package org.codepond.wizardroid;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+
+import org.codepond.wizardroid.infrastructure.BusProvider;
+import org.codepond.wizardroid.infrastructure.events.StepCompletedEvent;
 import org.codepond.wizardroid.persistence.ContextVariable;
 
 import java.lang.reflect.Field;
@@ -14,6 +18,7 @@ import java.util.Date;
  * As with regular {@link Fragment} each inherited class must have an empty constructor.
  */
 public abstract class WizardStep extends Fragment {
+
 	private static final String TAG = WizardStep.class.getSimpleName();
 
     /**
@@ -36,6 +41,16 @@ public abstract class WizardStep extends Fragment {
     public void onExit(int exitCode) {
     }
 
+
+    /**
+     * Notify the wizard that this step state had changed
+     * @param isStepCompleted true if this step is completed, false if it's incomplete
+     */
+    public final void notifyCompleted(boolean isStepCompleted) {
+        Log.v(TAG, "notifyCompleted() executed");
+        BusProvider.getInstance().post(new StepCompletedEvent(isStepCompleted));
+    }
+
     /**
      * IMPORTANT: This method is overridden to bind the wizard context to the step's fields.
      * Make sure to call super.onAttach(activity), if you override this method in your step class.
@@ -47,6 +62,18 @@ public abstract class WizardStep extends Fragment {
         if (args != null) {
             bindFields(args);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        BusProvider.getInstance().unregister(this);
     }
 
     private void bindFields(Bundle args) {

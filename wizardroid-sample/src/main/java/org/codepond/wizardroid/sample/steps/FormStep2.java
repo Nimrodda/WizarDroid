@@ -4,25 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import org.codepond.wizardroid.persistence.ContextVariable;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+
 import org.codepond.wizardroid.WizardStep;
 import org.codepond.wizardroid.sample.R;
 
+/**
+ * This step will block the user from proceeding to the next step
+ * unless the user mark the checkbox. The step is marked as required
+ * when the wizard flow is built. See {@link org.codepond.wizardroid.sample.wizards.FormWizard#onSetup()} for more info.
+ */
 public class FormStep2 extends WizardStep {
 
-    /**
-     * Tell WizarDroid that these are context variables.
-     * These values will be automatically bound to any field annotated with {@link ContextVariable}.
-     * NOTE: Context Variable names are unique and therefore must
-     * have the same name and type wherever you wish to use them.
-     */
-    @ContextVariable
-    private String firstname;
-    @ContextVariable
-    private String lastname;
-
-
+    private CheckBox checkBox;
     //You must have an empty constructor for every step
     public FormStep2() {
     }
@@ -31,15 +26,21 @@ public class FormStep2 extends WizardStep {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.step_summary, container, false);
-        TextView firstnameTv = (TextView) v.findViewById(R.id.firstname);
-        TextView lastnameTv = (TextView) v.findViewById(R.id.lastname);
-
-        //WizarDroid will automatically inject the values for these fields
-        //so we can simply set the text views
-        firstnameTv.setText(firstname);
-        lastnameTv.setText(lastname);
-
+        View v = inflater.inflate(R.layout.step_form2, container, false);
+        checkBox = (CheckBox) v.findViewById(R.id.sample_form2_checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //Notify that the step is completed
+                    notifyCompleted(true);
+                }
+                else {
+                    //Notify that the step is incomplete
+                    notifyCompleted(false);
+                }
+            }
+        });
         return v;
     }
 }

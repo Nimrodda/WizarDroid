@@ -10,4 +10,6 @@
         Hit Next or slide your finger to continue...</string>
     <string name="sample_form_summary">WizarDroid Context enables sharing data among steps.
         Summary of input:</string>
+    <string name="sample_form_text2">This is a demonstration of blocking the next step until an action is taken</string>
+    <string name="sample_form_checkbox">Check here to enable the next step</string>
 </resources>
