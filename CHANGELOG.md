@@ -1,6 +1,13 @@
 Change Log
 ===============================================================================
 
+Version 1.1.0 *(2013-11-10)*
+----------------------------
+
+* Feature: Ability to block the user to proceed to the next event by swiping or clicking the button
+* Fix: Removed unnecessary log statements
+* Upgraded Android SDK and Gradle to the latest versions
+
 Version 1.0.1 *(2013-10-06)*
 ----------------------------
 
