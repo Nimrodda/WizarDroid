@@ -2,23 +2,14 @@ package org.codepond.wizardroid;
 
 import android.os.Bundle;
 
-import com.squareup.otto.Subscribe;
-
-import org.codepond.wizardroid.infrastructure.BusProvider;
-import org.codepond.wizardroid.infrastructure.Disposable;
-import org.codepond.wizardroid.infrastructure.events.LoadInstanceStateEvent;
-import org.codepond.wizardroid.infrastructure.events.SaveInstanceStateEvent;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * WizardFlow holds information regarding the wizard's steps and flow.
  * Use {@link WizardFlow.Builder} to create an instance of WizardFlow.
  */
-public class WizardFlow implements Disposable {
+public class WizardFlow {
     /**
      * This class wraps WizardStep to provide additional meta data which is persisted separately
      * as part of the wizard flow.
@@ -26,12 +17,12 @@ public class WizardFlow implements Disposable {
     public static class StepMetaData {
         private boolean completed;
         private boolean required;
+
         private Class<? extends WizardStep> stepClass;
 
         private StepMetaData(boolean isRequired, Class<? extends WizardStep> stepClass) {
             this.required = isRequired;
             this.stepClass = stepClass;
-            this.completed = !isRequired;
         }
 
         public boolean isRequired() {
@@ -49,31 +40,29 @@ public class WizardFlow implements Disposable {
         public Class<? extends WizardStep> getStepClass() {
             return stepClass;
         }
+
     }
 
     private final List<StepMetaData> steps;
 
 	private WizardFlow(List<StepMetaData> steps) {
 		this.steps = steps;
-        BusProvider.getInstance().register(this);
 	}
 
-    @Override
-    public void dispose() {
-        BusProvider.getInstance().unregister(this);
-    }
-
     /**
-	 * Get the list of wizard flow steps which is cut off at the last step which is required and incomplete.
+	 * Get the list of wizard flow steps which is cut off at the last step which is required and incomplete
+     * and the first step which doesn't allow to go back and is incomplete.
      * This method is designed to work directly with ViewPager.
 	 */
 	public List<Class<? extends WizardStep>> getSteps() {
-        List<Class<? extends WizardStep>> steps = new ArrayList<Class<? extends WizardStep>>();
-        for (StepMetaData stepMeta : this.steps) {
-            steps.add(stepMeta.getStepClass());
-            if (!stepMeta.isCompleted() && stepMeta.isRequired()) break;
+        List<Class<? extends WizardStep>> cutOffFlow = new ArrayList<Class<? extends WizardStep>>();
+
+        //Calculate the cut off step by finding the last step which is required and incomplete
+        for (StepMetaData stepMetaData : this.steps) {
+            cutOffFlow.add(stepMetaData.getStepClass());
+            if (!stepMetaData.isCompleted() && stepMetaData.isRequired()) break;
         }
-        return steps;
+        return cutOffFlow;
 	}
 
     /**
@@ -110,25 +99,13 @@ public class WizardFlow implements Disposable {
         steps.get(stepPosition).setCompleted(stepCompleted);
     }
 
-    /**
-     * Event which is triggered by Otto whenever the wizard is paused
-     * and allows to persist the wizard flow in saved instance state.
-     */
-    @Subscribe
-    public final void persistFlow(SaveInstanceStateEvent event) {
-        Bundle state = event.getState();
+    final void persistFlow(Bundle state) {
         for (StepMetaData stepMetaData : steps) {
             state.putBoolean(stepMetaData.getStepClass().getSimpleName() + steps.indexOf(stepMetaData), stepMetaData.isCompleted());
         }
     }
 
-    /**
-     * Event which is triggered by Otto whenever the wizard is resumed and allows
-     * to load the wizard flow from the saved instance state.
-     */
-    @Subscribe
-    public final void loadFlow(LoadInstanceStateEvent event) {
-        Bundle state = event.getState();
+    final void loadFlow(Bundle state) {
         for (StepMetaData stepMetaData : steps) {
             stepMetaData.setCompleted(
                     state.getBoolean(stepMetaData.getStepClass().getSimpleName() + steps.indexOf(stepMetaData),

@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import org.codepond.wizardroid.infrastructure.BusProvider;
-import org.codepond.wizardroid.infrastructure.events.LoadInstanceStateEvent;
-import org.codepond.wizardroid.infrastructure.events.SaveInstanceStateEvent;
 import org.codepond.wizardroid.persistence.ContextManager;
 import org.codepond.wizardroid.persistence.ContextManagerImpl;
 
@@ -52,7 +49,7 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
         //TODO: get rid of this dependency
         contextManager = new ContextManagerImpl();
         if (savedInstanceState != null) {
-            BusProvider.getInstance().post(new LoadInstanceStateEvent(savedInstanceState));
+            flow.loadFlow(savedInstanceState);
             //Load pre-saved wizard context
             contextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
         }
@@ -69,7 +66,7 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     @Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-        BusProvider.getInstance().post(new SaveInstanceStateEvent(outState));
+        flow.persistFlow(outState);
         //Persist wizard context
         outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
 	}

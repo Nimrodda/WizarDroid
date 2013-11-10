@@ -3,9 +3,8 @@ package org.codepond.wizardroid;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
-import org.codepond.wizardroid.infrastructure.BusProvider;
+import org.codepond.wizardroid.infrastructure.Bus;
 import org.codepond.wizardroid.infrastructure.events.StepCompletedEvent;
 import org.codepond.wizardroid.persistence.ContextVariable;
 
@@ -18,7 +17,6 @@ import java.util.Date;
  * As with regular {@link Fragment} each inherited class must have an empty constructor.
  */
 public abstract class WizardStep extends Fragment {
-
 	private static final String TAG = WizardStep.class.getSimpleName();
 
     /**
@@ -47,8 +45,7 @@ public abstract class WizardStep extends Fragment {
      * @param isStepCompleted true if this step is completed, false if it's incomplete
      */
     public final void notifyCompleted(boolean isStepCompleted) {
-        Log.v(TAG, "notifyCompleted() executed");
-        BusProvider.getInstance().post(new StepCompletedEvent(isStepCompleted));
+        Bus.getInstance().post(new StepCompletedEvent(isStepCompleted));
     }
 
     /**
@@ -62,18 +59,6 @@ public abstract class WizardStep extends Fragment {
         if (args != null) {
             bindFields(args);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        BusProvider.getInstance().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        BusProvider.getInstance().unregister(this);
     }
 
     private void bindFields(Bundle args) {

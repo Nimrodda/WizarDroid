@@ -8,10 +8,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.squareup.otto.Subscribe;
-
-import org.codepond.wizardroid.infrastructure.BusProvider;
+import org.codepond.wizardroid.infrastructure.Bus;
 import org.codepond.wizardroid.infrastructure.Disposable;
+import org.codepond.wizardroid.infrastructure.Subscriber;
 import org.codepond.wizardroid.infrastructure.events.StepCompletedEvent;
 import org.codepond.wizardroid.persistence.ContextManager;
 
@@ -22,7 +21,7 @@ import org.codepond.wizardroid.persistence.ContextManager;
  * via {@link org.codepond.wizardroid.WizardFragment#wizard} field. Use this
  * class only if you wish to create a custom WizardFragment to control the wizard.
  */
-public class Wizard implements Disposable {
+public class Wizard implements Disposable, Subscriber {
     /**
      * Interface for key wizard events. Implement this interface if you wish to create
      * a custom WizardFragment.
@@ -119,26 +118,26 @@ public class Wizard implements Disposable {
 
             }
         });
-
-        BusProvider.getInstance().register(this);
+        Bus.getInstance().register(this, StepCompletedEvent.class);
 	}
 
     @Override
     public void dispose() {
-        BusProvider.getInstance().unregister(this);
-        wizardFlow.dispose();
+        Bus.getInstance().unregister(this);
     }
 
-    /**
-     * Otto event which is triggered when the step is marked as completed or incomplete
-     */
-    @Subscribe
-    public final void onStepCompletedEvent(StepCompletedEvent event) {
+    @Override
+    public void receive(Object event) {
+        StepCompletedEvent stepCompletedEvent = (StepCompletedEvent) event;
+        onStepCompleted(stepCompletedEvent.isStepCompleted());
+    }
+
+    private void onStepCompleted(boolean isComplete) {
         int stepPosition = getCurrentStepPosition();
 
         //Check if the step is already marked as completed/incomplete
-        if (wizardFlow.isStepCompleted(stepPosition) != event.isStepCompleted()) {
-            wizardFlow.setStepCompleted(stepPosition, event.isStepCompleted());
+        if (wizardFlow.isStepCompleted(stepPosition) != isComplete) {
+            wizardFlow.setStepCompleted(stepPosition, isComplete);
             mPager.getAdapter().notifyDataSetChanged();
             //Refresh the UI
             callbacks.onStepChanged();
@@ -149,32 +148,34 @@ public class Wizard implements Disposable {
 	 * Advance the wizard to the next step
 	 */
 	public void goNext() {
-        Log.v(TAG, "goNext() executed");
-        getCurrentStep().onExit(WizardStep.EXIT_NEXT);
-        contextManager.persistStepContext(getCurrentStep());
-        //Tell the ViewPager to re-create the fragments, causing it to bind step context
-        mPager.getAdapter().notifyDataSetChanged();
+        Log.v(TAG, "goNext()");
+        if (canGoNext()) {
+            wizardFlow.setStepCompleted(getCurrentStepPosition(), true);
+            getCurrentStep().onExit(WizardStep.EXIT_NEXT);
+            contextManager.persistStepContext(getCurrentStep());
+            //Tell the ViewPager to re-create the fragments, causing it to bind step context
+            mPager.getAdapter().notifyDataSetChanged();
 
-        if (isLastStep()) {
-            callbacks.onWizardComplete();
-        }
-        else {
-            //Check if the user dragged the page or pressed a button.
-            //If the page was dragged then the ViewPager will handle the current step.
-            //Otherwise, set the current step programmatically.
-            if (!fingerSlide) {
-                setCurrentStep(mPager.getCurrentItem() + 1);
+            if (isLastStep()) {
+                callbacks.onWizardComplete();
             }
-        }
-        //Notify the hosting Fragment/Activity that the step has changed so it might want to update the controls accordingly
-        callbacks.onStepChanged();
-	}
+            else {
+                //Check if the user dragged the page or pressed a button.
+                //If the page was dragged then the ViewPager will handle the current step.
+                //Otherwise, set the current step programmatically.
+                if (!fingerSlide) {
+                    setCurrentStep(mPager.getCurrentItem() + 1);
+                }
+                //Notify the hosting Fragment/Activity that the step has changed so it might want to update the controls accordingly
+                callbacks.onStepChanged();
+            }
+	    }
+    }
 
     /**
 	 * Takes the wizard one step back
 	 */
 	public void goBack() {
-        Log.v(TAG, "goBack() executed");
         if (!isFirstStep()) {
             getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
             //Check if the user dragged the page or pressed a button.
@@ -233,7 +234,11 @@ public class Wizard implements Disposable {
      * is completed
      */
     public boolean canGoNext() {
-        return wizardFlow.isStepCompleted(getCurrentStepPosition());
+        int stepPosition = getCurrentStepPosition();
+        if (wizardFlow.isStepRequired(stepPosition)) {
+            return wizardFlow.isStepCompleted(stepPosition);
+        }
+        return true;
     }
 
     /**
