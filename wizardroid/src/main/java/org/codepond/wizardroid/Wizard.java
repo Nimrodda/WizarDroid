@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import org.codepond.wizardroid.infrastructure.Bus;
@@ -148,7 +147,6 @@ public class Wizard implements Disposable, Subscriber {
 	 * Advance the wizard to the next step
 	 */
 	public void goNext() {
-        Log.v(TAG, "goNext()");
         if (canGoNext()) {
             wizardFlow.setStepCompleted(getCurrentStepPosition(), true);
             getCurrentStep().onExit(WizardStep.EXIT_NEXT);
@@ -257,7 +255,6 @@ public class Wizard implements Disposable, Subscriber {
             try {
                 WizardStep step = wizardFlow.getSteps().get(i).newInstance();
                 contextManager.loadStepContext(step);
-                Log.v(TAG, "context loaded for " + step.toString());
                 return step;
             } catch (InstantiationException e) {
                 e.printStackTrace();
