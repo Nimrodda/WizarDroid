@@ -1,5 +1,7 @@
 package org.codepond.wizardroid;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,20 +10,108 @@ import java.util.List;
  * Use {@link WizardFlow.Builder} to create an instance of WizardFlow.
  */
 public class WizardFlow {
-	private final List<Class<? extends WizardStep>> steps;
+    /**
+     * This class wraps WizardStep to provide additional meta data which is persisted separately
+     * as part of the wizard flow.
+     */
+    public static class StepMetaData {
+        private boolean completed;
+        private boolean required;
 
-	private WizardFlow(List<Class<? extends WizardStep>> steps) {
+        private Class<? extends WizardStep> stepClass;
+
+        private StepMetaData(boolean isRequired, Class<? extends WizardStep> stepClass) {
+            this.required = isRequired;
+            this.stepClass = stepClass;
+        }
+
+        public boolean isRequired() {
+            return required;
+        }
+
+        public boolean isCompleted() {
+            return completed;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
+        }
+
+        public Class<? extends WizardStep> getStepClass() {
+            return stepClass;
+        }
+
+    }
+
+    private final List<StepMetaData> steps;
+
+	private WizardFlow(List<StepMetaData> steps) {
 		this.steps = steps;
 	}
 
-	/**
-	 * Get the steps from the wizard's flow.
-	 * @return {@link WizardStep} List of WizardStep.
+    /**
+	 * Get the list of wizard flow steps which is cut off at the last step which is required and incomplete
+     * and the first step which doesn't allow to go back and is incomplete.
+     * This method is designed to work directly with ViewPager.
 	 */
 	public List<Class<? extends WizardStep>> getSteps() {
-		return steps;
+        List<Class<? extends WizardStep>> cutOffFlow = new ArrayList<Class<? extends WizardStep>>();
+
+        //Calculate the cut off step by finding the last step which is required and incomplete
+        for (StepMetaData stepMetaData : this.steps) {
+            cutOffFlow.add(stepMetaData.getStepClass());
+            if (!stepMetaData.isCompleted() && stepMetaData.isRequired()) break;
+        }
+        return cutOffFlow;
 	}
 
+    /**
+     * Check if the specified step is required
+     * @param stepPosition the position of the step to be checked
+     */
+    public boolean isStepRequired(int stepPosition) {
+        StepMetaData meta = steps.get(stepPosition);
+        return meta.isRequired();
+    }
+
+    /**
+     * Check if the specified step is completed or incomplete
+     * @param stepPosition the position of the step to be checked
+     */
+    public boolean isStepCompleted(int stepPosition) {
+        StepMetaData meta = steps.get(stepPosition);
+        return meta.isCompleted();
+    }
+
+    /**
+     * Get the total amount of steps in the flow
+     */
+    public int getStepsCount() {
+        return this.steps.size();
+    }
+
+    /**
+     * Set a step completed or incomplete
+     * @param stepPosition the position of the step to be set
+     * @param stepCompleted true for complete, false for incomplete
+     */
+    public void setStepCompleted(int stepPosition, boolean stepCompleted) {
+        steps.get(stepPosition).setCompleted(stepCompleted);
+    }
+
+    final void persistFlow(Bundle state) {
+        for (StepMetaData stepMetaData : steps) {
+            state.putBoolean(stepMetaData.getStepClass().getSimpleName() + steps.indexOf(stepMetaData), stepMetaData.isCompleted());
+        }
+    }
+
+    final void loadFlow(Bundle state) {
+        for (StepMetaData stepMetaData : steps) {
+            stepMetaData.setCompleted(
+                    state.getBoolean(stepMetaData.getStepClass().getSimpleName() + steps.indexOf(stepMetaData),
+                            stepMetaData.isCompleted()));
+        }
+    }
 	/**
 	 * Builder for {@link WizardFlow}. Use this class to build an instance of WizardFlow.
      * You need to use this class in your wizard's {@link WizardFragment#onSetup()} to return an instance of WizardFlow.
@@ -30,26 +120,38 @@ public class WizardFlow {
 	 */
 	public static class Builder {
 
-		private List<Class<? extends WizardStep>> wizardSteps;
+        private List<StepMetaData> wizardSteps;
 
         /**
 		 * Construct a WizardFlow.Builder
 		 */
 		public Builder() {
-			wizardSteps = new ArrayList<Class<? extends WizardStep>>();
+			wizardSteps = new ArrayList<StepMetaData>();
 		}
 		
 		/**
 		 * Add a step to the WizardFlow. Note that the wizard flow is determined by the order of added steps.
 		 * @param stepClass
 		 *            The class of {@link WizardStep} to create (if necessary)
-		 * @return Builder for chaining set methods
+		 * @return Builder for creating a wizard flow
 		 */
 		public Builder addStep(Class<? extends WizardStep> stepClass) {
-			wizardSteps.add(stepClass);
-			return this;
+			return addStep(stepClass, false);
 		}
-		
+
+        /**
+         * Add a step to the WizardFlow. Note that the wizard flow is determined by the order of added steps.
+         * @param stepClass
+         *            The class of {@link WizardStep} to create (if necessary)
+         * @param isRequired
+         *            Determine if the step is required before advancing to the next step
+         * @return Builder for creating a wizard flow
+         */
+        public Builder addStep(Class<? extends WizardStep> stepClass, boolean isRequired) {
+            wizardSteps.add(new StepMetaData(isRequired, stepClass));
+            return this;
+        }
+
 		/**
 		 * Create a new {@link WizardFlow} object.
 		 * @return WizardFlow Instance of WizardFlow

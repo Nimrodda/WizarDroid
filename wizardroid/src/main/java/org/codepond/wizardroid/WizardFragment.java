@@ -49,6 +49,7 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
         //TODO: get rid of this dependency
         contextManager = new ContextManagerImpl();
         if (savedInstanceState != null) {
+            flow.loadFlow(savedInstanceState);
             //Load pre-saved wizard context
             contextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
         }
@@ -65,6 +66,7 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     @Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+        flow.persistFlow(outState);
         //Persist wizard context
         outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
 	}
@@ -82,4 +84,9 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
 	 */
 	public abstract WizardFlow onSetup();
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        wizard.dispose();
+    }
 }

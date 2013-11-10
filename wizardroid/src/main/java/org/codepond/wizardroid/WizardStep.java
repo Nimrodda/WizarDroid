@@ -3,6 +3,9 @@ package org.codepond.wizardroid;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import org.codepond.wizardroid.infrastructure.Bus;
+import org.codepond.wizardroid.infrastructure.events.StepCompletedEvent;
 import org.codepond.wizardroid.persistence.ContextVariable;
 
 import java.lang.reflect.Field;
@@ -34,6 +37,15 @@ public abstract class WizardStep extends Fragment {
      *                 WizardStep.EXIT_PREVIOUS when wizard is about to go to the previous step.
      */
     public void onExit(int exitCode) {
+    }
+
+
+    /**
+     * Notify the wizard that this step state had changed
+     * @param isStepCompleted true if this step is completed, false if it's incomplete
+     */
+    public final void notifyCompleted(boolean isStepCompleted) {
+        Bus.getInstance().post(new StepCompletedEvent(isStepCompleted));
     }
 
     /**

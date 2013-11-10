@@ -53,6 +53,12 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         return wizardLayout;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateWizardControls();
+    }
+
     /**
      * Triggered when the wizard is completed.
      * Overriding this method is optional.
@@ -94,8 +100,14 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * Updates the UI according to current step position
      */
     private void updateWizardControls() {
+        //Disable the back button in the first step
         previousButton.setEnabled(!wizard.isFirstStep());
+
         previousButton.setText(getBackButtonLabel());
+        //Disable the next button if the step is marked as 'required' and is incomplete
+        nextButton.setEnabled(wizard.canGoNext());
+
+        //Set different next button label based on the wizard position
         nextButton.setText(wizard.isLastStep()
                 ? getFinishButtonText()
                 : getNextButtonLabel());
