@@ -3,17 +3,17 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "18.0.1"
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 18
+        targetSdkVersion 19
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.android.support:support-v4:19.0.0'
 }
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
