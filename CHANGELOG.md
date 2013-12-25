@@ -1,6 +1,12 @@
 Change Log
 ===============================================================================
 
+Version 1.1.1 *(2013-11-10)*
+----------------------------
+
+* Fix: Issue #32 - context variables are now updated properly when onWizardComplete event is triggered
+
+
 Version 1.1.0 *(2013-11-10)*
 ----------------------------
 
