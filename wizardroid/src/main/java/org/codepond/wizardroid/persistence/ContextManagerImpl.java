@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
+import org.codepond.wizardroid.WizardFragment;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -70,7 +72,12 @@ public class ContextManagerImpl implements ContextManager {
                 }
             }
         }
-        step.setArguments(args);
+        if (step instanceof WizardFragment) {
+            bindFields((WizardFragment)step, args);
+        }
+        else {
+            step.setArguments(args);
+        }
     }
 
     @Override
@@ -139,5 +146,26 @@ public class ContextManagerImpl implements ContextManager {
     @Override
     public void setContext(Bundle context) {
         this.context = context;
+    }
+
+    private void bindFields(WizardFragment wizardFragment, Bundle args) {
+        //Scan the step for fields annotated with @ContextVariable
+        //and bind value if found in step's arguments
+        Field[] fields = wizardFragment.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(ContextVariable.class) != null && args.containsKey(field.getName())) {
+                field.setAccessible(true);
+                try {
+                    if (field.getType() == Date.class) {
+                        field.set(wizardFragment, new Date(args.getLong(field.getName())));
+                    }
+                    else {
+                        field.set(wizardFragment, args.get(field.getName()));
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

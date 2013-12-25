@@ -27,8 +27,10 @@ public class FormWizard extends BasicWizardLayout {
         super();
     }
 
-    //You must override this method and create a wizard flow by
-    //using WizardFlow.Builder as shown in this example
+    /*
+        You must override this method and create a wizard flow by
+        using WizardFlow.Builder as shown in this example
+     */
     @Override
     public WizardFlow onSetup() {
         return new WizardFlow.Builder()
@@ -45,5 +47,18 @@ public class FormWizard extends BasicWizardLayout {
                 .addStep(FormStep2.class, true)
                 .addStep(FormStep3.class)
                 .create();
+    }
+
+    /*
+        You'd normally override onWizardComplete to access the wizard context and/or close the wizard
+     */
+    @Override
+    public void onWizardComplete() {
+        super.onWizardComplete();   //Make sure to first call the super method before anything else
+        //... Access context variables here before terminating the wizard
+        //...
+        //String fullname = firstname + lastname;
+        //Store the data in the DB or pass it back to the calling activity
+        getActivity().finish();     //Terminate the wizard
     }
 }

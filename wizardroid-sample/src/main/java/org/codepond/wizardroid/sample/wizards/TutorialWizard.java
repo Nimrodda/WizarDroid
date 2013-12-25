@@ -14,13 +14,24 @@ public class TutorialWizard extends BasicWizardLayout {
         super();
     }
 
-    //You must override this method and create a wizard flow by
-    //using WizardFlow.Builder as shown in this example
+    /*
+        You must override this method and create a wizard flow by
+        using WizardFlow.Builder as shown in this example
+     */
     @Override
     public WizardFlow onSetup() {
         return new WizardFlow.Builder()
                 .addStep(TutorialStep1.class)           //Add your steps in the order you want them
                 .addStep(TutorialStep2.class)           //to appear and eventually call create()
                 .create();                              //to create the wizard flow.
+    }
+
+    /*
+        You'd normally override onWizardComplete to access the wizard context and/or close the wizard
+     */
+    @Override
+    public void onWizardComplete() {
+        super.onWizardComplete();   //Make sure to first call the super method before anything else
+        getActivity().finish();     //Terminate the wizard
     }
 }

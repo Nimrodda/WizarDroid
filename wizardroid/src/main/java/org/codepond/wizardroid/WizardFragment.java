@@ -76,7 +76,7 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
      */
     @Override
     public void onWizardComplete() {
-
+        contextManager.loadStepContext(this);
     }
 
     /**
@@ -89,4 +89,6 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
         super.onDetach();
         wizard.dispose();
     }
+
+
 }

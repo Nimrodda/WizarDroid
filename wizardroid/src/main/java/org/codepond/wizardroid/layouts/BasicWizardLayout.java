@@ -70,7 +70,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         //Do whatever you want to do once the Wizard is complete
         //in this case I just close the activity, which causes Android
         //to go back to the previous activity.
-        getActivity().finish();
+        super.onWizardComplete();
     }
 
     /**
