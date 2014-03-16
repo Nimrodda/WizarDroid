@@ -1,6 +1,12 @@
 Change Log
 ===============================================================================
 
+Version 1.1.2 *(2014-03-16)*
+----------------------------
+
+* Fix: Issue #37 - removed minSdk and targetSdk from AndroidManifest.xml - contributed by @knicknak
+* Upgraded to Gradle 1.11 and Android Gradle plugin 0.9.0
+
 Version 1.1.1 *(2013-11-10)*
 ----------------------------
 
