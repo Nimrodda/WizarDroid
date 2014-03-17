@@ -3,6 +3,7 @@ package org.codepond.wizardroid;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
@@ -42,8 +43,10 @@ public class Wizard implements Disposable, Subscriber {
     private final ContextManager contextManager;
     private final WizardCallbacks callbacks;
     private final ViewPager mPager;
+    private final FragmentManager mFragmentManager;
 
     private boolean fingerSlide;
+    private int backStackEntryCount;
 
 
     /**
@@ -61,11 +64,27 @@ public class Wizard implements Disposable, Subscriber {
         this.contextManager = contextManager;
         this.callbacks = callbacks;
         this.mPager = (ViewPager) activity.findViewById(R.id.step_container);
+        this.mFragmentManager = activity.getSupportFragmentManager();
+
         if (mPager == null) {
             throw new RuntimeException("Cannot initialize Wizard. View with ID: step_container not found!" +
                     " The hosting Activity/Fragment must have a ViewPager in its layout with ID: step_container");
         }
+
         mPager.setAdapter(new WizardPagerAdapter(activity.getSupportFragmentManager()));
+
+        backStackEntryCount = mFragmentManager.getBackStackEntryCount();
+        mFragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                backStackEntryCount = mFragmentManager.getBackStackEntryCount();
+
+                //onBackPressed
+                if (backStackEntryCount < getCurrentStepPosition()){
+                    mPager.setCurrentItem(getCurrentStepPosition() - 1);
+                }
+            }
+        });
 
         //Implementation of OnPageChangeListener to handle wizard control via user finger slides
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -103,6 +122,12 @@ public class Wizard implements Disposable, Subscriber {
             @Override
             public void onPageSelected(int position) {
                 //Signal that the page is now "selected"
+                if (backStackEntryCount < position){
+                    mFragmentManager.beginTransaction().addToBackStack(null).commit();
+                }
+                else if (backStackEntryCount > position){
+                    mFragmentManager.popBackStack();
+                }
                 consumedPageSelectedEvent = true;
             }
 
