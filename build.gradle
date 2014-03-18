@@ -11,6 +11,10 @@ buildscript {
 allprojects {
     version = "1.2.0"
     group = "org.codepond"
+
+    project.ext {
+        versionCode = 5
+    }
 }
 
 subprojects {
