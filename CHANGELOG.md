@@ -1,10 +1,12 @@
 Change Log
 ===============================================================================
 
-Version 1.1.2 *(2014-03-16)*
+Version 1.2.0 *(2014-03-18)*
 ----------------------------
 
 * Fix: Issue #37 - removed minSdk and targetSdk from AndroidManifest.xml - contributed by @knicknak
+* Feature: Device's back button will now cause the wizard to go to the previous step - contributed by @denny0223
+* Feature: Install WizarDroid.aar to local maven repository via 'gradle install' command
 * Upgraded to Gradle 1.11 and Android Gradle plugin 0.9.0
 
 Version 1.1.1 *(2013-11-10)*
