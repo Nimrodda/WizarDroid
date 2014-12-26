@@ -33,11 +33,11 @@ public class FormStep2 extends WizardStep {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     //Notify that the step is completed
-                    notifyCompleted(true);
+                    notifyCompleted();
                 }
                 else {
                     //Notify that the step is incomplete
-                    notifyCompleted(false);
+                    notifyIncomplete();
                 }
             }
         });

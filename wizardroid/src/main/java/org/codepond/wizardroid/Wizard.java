@@ -153,13 +153,15 @@ public class Wizard implements Disposable, Subscriber {
     @Override
     public void receive(Object event) {
         StepCompletedEvent stepCompletedEvent = (StepCompletedEvent) event;
-        onStepCompleted(stepCompletedEvent.isStepCompleted());
+        onStepCompleted(stepCompletedEvent.isStepCompleted(), stepCompletedEvent.getStep());
     }
 
-    private void onStepCompleted(boolean isComplete) {
-        int stepPosition = getCurrentStepPosition();
+    private void onStepCompleted(boolean isComplete, WizardStep step) {
+        if (step != getCurrentStep()) return;
+		int stepPosition = getCurrentStepPosition();
 
-        //Check if the step is already marked as completed/incomplete
+
+        // Check that the step is not already in this state to avoid spamming the viewpager
         if (wizardFlow.isStepCompleted(stepPosition) != isComplete) {
             wizardFlow.setStepCompleted(stepPosition, isComplete);
             mPager.getAdapter().notifyDataSetChanged();

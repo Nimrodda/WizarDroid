@@ -43,10 +43,26 @@ public abstract class WizardStep extends Fragment {
     /**
      * Notify the wizard that this step state had changed
      * @param isStepCompleted true if this step is completed, false if it's incomplete
+	 * @deprecated Please use {@link #notifyCompleted()} and {@link #notifyIncomplete()} instead
      */
+	@Deprecated
     public final void notifyCompleted(boolean isStepCompleted) {
-        Bus.getInstance().post(new StepCompletedEvent(isStepCompleted));
+        Bus.getInstance().post(new StepCompletedEvent(isStepCompleted, this));
     }
+
+	/**
+	 * Notify the wizard that this step is completed
+	 */
+	public final void notifyCompleted() {
+		Bus.getInstance().post(new StepCompletedEvent(true, this));
+	}
+
+	/**
+	 * Notify the wizard that this step is incomplete
+	 */
+	public final void notifyIncomplete() {
+		Bus.getInstance().post(new StepCompletedEvent(false, this));
+	}
 
     /**
      * IMPORTANT: This method is overridden to bind the wizard context to the step's fields.
