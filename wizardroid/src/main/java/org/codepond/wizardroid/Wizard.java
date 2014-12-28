@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import org.codepond.wizardroid.infrastructure.Bus;
@@ -22,7 +23,7 @@ import org.codepond.wizardroid.persistence.ContextManager;
  * class only if you wish to create a custom WizardFragment to control the wizard.
  */
 public class Wizard implements Disposable, Subscriber {
-    /**
+	/**
      * Interface for key wizard events. Implement this interface if you wish to create
      * a custom WizardFragment.
      */
@@ -38,18 +39,18 @@ public class Wizard implements Disposable, Subscriber {
         public void onStepChanged();
     }
 
+	private static final boolean DEBUG = false;
     private static final String TAG = Wizard.class.getSimpleName();
 	private final WizardFlow wizardFlow;
     private final ContextManager contextManager;
     private final WizardCallbacks callbacks;
     private final ViewPager mPager;
     private final FragmentManager mFragmentManager;
-
-    private boolean fingerSlide;
     private int backStackEntryCount;
+	private WizardStep mPreviousStep;
+	private int mPreviousPosition;
 
-
-    /**
+	/**
      * Constructor for Wizard
      * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
      * @param contextManager ContextManager instance would normally be {@link org.codepond.wizardroid.persistence.ContextManagerImpl}
@@ -88,58 +89,48 @@ public class Wizard implements Disposable, Subscriber {
 
         //Implementation of OnPageChangeListener to handle wizard control via user finger slides
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			private int mPreviousState = ViewPager.SCROLL_STATE_IDLE;
 
-            private boolean initialOffsetIsSet;
-            private float initialOffset;
-            private boolean consumedPageSelectedEvent;
-
-            @Override
+			@Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //Check if the page started to be dragged by the user
-                //and avoid positionOffset 0
-                if (!initialOffsetIsSet && positionOffset > 0) {
-                    //Store the initialOffset for later comparison
-                    initialOffset = positionOffset;
-                    //Signal that initial offset has been set for the current page drag sequence
-                    initialOffsetIsSet = true;
-                }
-                //Check slide direction and decide if to call goNext() or goBack()
-                //Once page is "selected" (visible to the user)), skip checking slide direction
-                if (!consumedPageSelectedEvent && positionOffset > 0) {
-                    if (positionOffset > initialOffset) {
-                        //Sliding right
-                        goNext();
-                        fingerSlide = true;
-                    }
-                    else if (positionOffset < initialOffset){
-                        //Sliding left
-                        goBack();
-                        fingerSlide = true;
-                    }
-                }
             }
 
             @Override
             public void onPageSelected(int position) {
-                //Signal that the page is now "selected"
                 if (backStackEntryCount < position){
                     mFragmentManager.beginTransaction().addToBackStack(null).commit();
                 }
                 else if (backStackEntryCount > position){
                     mFragmentManager.popBackStack();
                 }
-                consumedPageSelectedEvent = true;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    //No animation is on going, reset flags
-                    consumedPageSelectedEvent = false;
-                    initialOffsetIsSet = false;
-                    fingerSlide = false;
-                }
-
+				if (DEBUG) Log.v(TAG, "onPageScrollStateChanged " + state);
+				switch (state) {
+					case ViewPager.SCROLL_STATE_DRAGGING:
+						mPreviousPosition = getCurrentStepPosition();
+						mPreviousStep = getCurrentStep();
+						break;
+					case ViewPager.SCROLL_STATE_SETTLING:
+						callbacks.onStepChanged();
+						break;
+					case ViewPager.SCROLL_STATE_IDLE:
+						if (mPreviousState == ViewPager.SCROLL_STATE_SETTLING) {
+							if (getCurrentStepPosition() > mPreviousPosition) {
+								if (DEBUG) Log.v(TAG, "goNext");
+								processStepBeforeChange(mPreviousStep, mPreviousPosition);
+								mPager.getAdapter().notifyDataSetChanged();
+							}
+							else {
+								if (DEBUG) Log.v(TAG, "goBack");
+								mPreviousStep.onExit(WizardStep.EXIT_PREVIOUS);
+							}
+						}
+						break;
+				}
+				mPreviousState = state;
             }
         });
         Bus.getInstance().register(this, StepCompletedEvent.class);
@@ -170,48 +161,36 @@ public class Wizard implements Disposable, Subscriber {
         }
     }
 
+	private void processStepBeforeChange(WizardStep step, int position) {
+		step.onExit(WizardStep.EXIT_NEXT);
+		wizardFlow.setStepCompleted(position, true);
+		contextManager.persistStepContext(step);
+	}
+
     /**
 	 * Advance the wizard to the next step
 	 */
 	public void goNext() {
-        if (canGoNext()) {
-            wizardFlow.setStepCompleted(getCurrentStepPosition(), true);
-            getCurrentStep().onExit(WizardStep.EXIT_NEXT);
-            contextManager.persistStepContext(getCurrentStep());
-            //Tell the ViewPager to re-create the fragments, causing it to bind step context
-            mPager.getAdapter().notifyDataSetChanged();
-
-            if (isLastStep()) {
-                callbacks.onWizardComplete();
-            }
-            else {
-                //Check if the user dragged the page or pressed a button.
-                //If the page was dragged then the ViewPager will handle the current step.
-                //Otherwise, set the current step programmatically.
-                if (!fingerSlide) {
-                    setCurrentStep(mPager.getCurrentItem() + 1);
-                }
-                //Notify the hosting Fragment/Activity that the step has changed so it might want to update the controls accordingly
-                callbacks.onStepChanged();
-            }
-	    }
+		if (canGoNext()) {
+			if (isLastStep()) {
+				processStepBeforeChange(getCurrentStep(), getCurrentStepPosition());
+				callbacks.onWizardComplete();
+			}
+			else {
+				mPreviousPosition = getCurrentStepPosition();
+				mPreviousStep = getCurrentStep();
+				setCurrentStep(mPager.getCurrentItem() + 1);
+			}
+		}
     }
 
     /**
 	 * Takes the wizard one step back
 	 */
 	public void goBack() {
-        if (!isFirstStep()) {
-            getCurrentStep().onExit(WizardStep.EXIT_PREVIOUS);
-            //Check if the user dragged the page or pressed a button.
-            //If the page was dragged then the ViewPager will handle the current step.
-            //Otherwise, set the current step programmatically.
-            if (!fingerSlide) {
-                setCurrentStep(mPager.getCurrentItem() - 1);
-            }
-            //Notify the hosting Fragment/Activity that the step has changed so it might want to update the controls accordingly
-            callbacks.onStepChanged();
-        }
+		if (!isFirstStep()) {
+			setCurrentStep(mPager.getCurrentItem() - 1);
+		}
 	}
 	
 	/**
