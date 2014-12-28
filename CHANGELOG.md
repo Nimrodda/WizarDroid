@@ -1,6 +1,18 @@
 Change Log
 ===============================================================================
 
+Version 1.3.0 *(2014-12-28)*
+----------------------------
+
+* Fixed #48: Context Variable values lost after orientation change
+* Fixed #34: Swipe Back/Prev is very sensitive
+* Fixed #47: ContextManagerImpl.persistStepContext() throws NullPointerException
+* Fixed #31: Crash occures when having more than one required step marked completed
+* Added: Gradle Wrapper - solving the need to upgrade Gradle everytime
+* Feature: Automatically hide soft keyboard on step switch - contributed by @Alexander--
+* Removed: Installing WizarDroid.aar to local maven repository via 'gradle install' command is not supported anymore. Either use WizarDroid's global Gradle dependency via Maven Central or include it as a library project in your app.
+* Upgraded to Android API level 21, including build tools 21.1.2 and support-v4:21.0.3
+
 Version 1.2.0 *(2014-03-18)*
 ----------------------------
 
