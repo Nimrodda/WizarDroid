@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import org.codepond.wizardroid.R;
 import org.codepond.wizardroid.WizardFragment;
+import org.codepond.wizardroid.persistence.ContextManager;
 
 /**
  * Basic Wizard UI class with built-in layout.
@@ -36,7 +37,12 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     public BasicWizardLayout() {
         super();
     }
-    /**
+
+	public BasicWizardLayout(ContextManager contextManager) {
+		super(contextManager);
+	}
+
+	/**
      * Setting the layout for this basic wizard layout and hooking up wizard controls to their
      * OnClickListeners.
      */
@@ -93,6 +99,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      */
     @Override
     public void onStepChanged() {
+		super.onStepChanged();
         updateWizardControls();
     }
 

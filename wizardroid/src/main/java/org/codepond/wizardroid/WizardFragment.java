@@ -1,9 +1,12 @@
 package org.codepond.wizardroid;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import org.codepond.wizardroid.persistence.ContextManager;
 import org.codepond.wizardroid.persistence.ContextManagerImpl;
@@ -29,9 +32,34 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     protected Wizard wizard;
 
     public WizardFragment() {
-
+        this.contextManager = new ContextManagerImpl();
     }
 
+    /**
+     * @param contextManager {@link ContextManager}, responsible for persisting variable values between steps
+     */
+    public WizardFragment(ContextManager contextManager) {
+        this.contextManager = contextManager;
+    }
+
+    /**
+     * Called during step switch. Default implementation hides keyboard.
+     **/
+    @Override
+    public void onStepChanged() {
+        // in order to hide software input method we need to authorize with window token from focused window
+        // this code relies on (somewhat fragile) assumption, that the only window, that can hold
+        // software keyboard focus during fragment switch, one with fragment itself.
+        final InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        View focusedWindowChild = wizard.getCurrentStep().getView();
+        if (focusedWindowChild == null)
+            focusedWindowChild = getActivity().getCurrentFocus();
+        if (focusedWindowChild == null)
+            focusedWindowChild = new View(getActivity());
+        mgr.hideSoftInputFromWindow(focusedWindowChild.getWindowToken(), 0);
+    }
+    
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -46,8 +74,6 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //TODO: get rid of this dependency
-        contextManager = new ContextManagerImpl();
         if (savedInstanceState != null) {
             flow.loadFlow(savedInstanceState);
             //Load pre-saved wizard context
@@ -90,6 +116,4 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
         super.onDetach();
         wizard.dispose();
     }
-
-
 }
