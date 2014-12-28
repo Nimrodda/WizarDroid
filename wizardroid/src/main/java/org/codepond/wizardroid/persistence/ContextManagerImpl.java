@@ -121,7 +121,10 @@ public class ContextManagerImpl implements ContextManager {
                         context.putParcelable(field.getName(), (Parcelable) field.get(step));
                     }
                     else if (field.getType() == Date.class) {
-                        context.putLong(field.getName(), ((Date) field.get(step)).getTime());
+						Date d = (Date) field.get(step);
+						if (d != null) {
+							context.putLong(field.getName(), d.getTime());
+						}
                     }
                     else if (field.getType() instanceof Serializable) {
                         context.putSerializable(field.getName(), (Serializable) field.get(step));

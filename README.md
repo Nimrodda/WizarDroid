@@ -27,7 +27,11 @@ You need to make sure that your project is compatible with the following:
 
 Build and Documentation
 -----------------------
+When cloning the repository, make sure to clone also the documentation submodule. To do this, type the following from the root folder of the repository:
 
+    git submodule init
+    git submodule update
+    
 For more information refer to the [Wiki pages on github](https://github.com/Nimrodda/WizarDroid/wiki) or check out the bundled sample project.
 
 Contribute
@@ -35,7 +39,8 @@ Contribute
 
 Right now the sample app is very poor. I'm looking for extra hands on that.
 Please send me an email if you wish to help me with it.
-Otherwise if you wish to contribute, fork and create a pull request.
+Otherwise if you wish to contribute, fork and create a pull request. Also don't forget to update the documentation located in the `docs/` folder.
+
 Thanks!
 
 Credits
