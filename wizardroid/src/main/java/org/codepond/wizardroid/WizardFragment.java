@@ -52,15 +52,16 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
             flow.loadFlow(savedInstanceState);
             //Load pre-saved wizard context
             contextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
+			contextManager.loadStepContext(this);
         }
         else {
             //Initialize wizard context
             contextManager.setContext(new Bundle());
+			//Persist hosting activity/fragment fields to wizard context enabling easy data transfer between
+			//wizard host and the steps
+			contextManager.persistStepContext(this);
         }
         wizard = new Wizard(flow, contextManager, this, this.getActivity());
-        //Persist hosting activity/fragment fields to wizard context enabling easy data transfer between
-        //wizard host and the steps
-        contextManager.persistStepContext(this);
     }
 
     @Override
