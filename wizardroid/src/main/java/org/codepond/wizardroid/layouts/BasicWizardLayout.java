@@ -48,7 +48,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View wizardLayout = inflater.inflate(R.layout.wizard, container, false);
+        View wizardLayout = inflater.inflate(R.layout.wizardroid_basic_wizard, container, false);
         nextButton = (Button) wizardLayout.findViewById(R.id.wizard_next_button);
         nextButton.setOnClickListener(this);
         nextButton.setText(getNextButtonLabel());
