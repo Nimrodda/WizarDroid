@@ -278,7 +278,7 @@ public class Wizard implements Disposable, Subscriber {
 
         @Override
         public int getItemPosition(Object object) {
-            if (object.equals(mPrimaryItem)) {
+            if (object.equals(mPreviousStep)) {
                 return POSITION_UNCHANGED;
             }
             else {
