@@ -39,4 +39,6 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:22.0.0'
     compile project(':wizardroid')
+
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
 }
