@@ -1,6 +1,15 @@
 Change Log
 ===============================================================================
 
+Version 1.3.1 *(2015-03-23)*
+----------------------------
+
+* Fixed #59: Wizard Context not saved when pressing the Next button
+* Updated Android Gradle plugin to version 1.1.0
+* Updated to support-v4 library to version 22.0.0
+* Updated Android Gradle plugin ID in gradle build files
+* Added functional test for verifying that the wizard context is saved whether swiping or tapping next button
+
 Version 1.3.0 *(2014-12-28)*
 ----------------------------
 
