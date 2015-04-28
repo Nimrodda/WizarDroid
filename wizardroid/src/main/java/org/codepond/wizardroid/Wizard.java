@@ -189,8 +189,8 @@ public class Wizard implements Disposable, Subscriber {
 	 */
 	public void goBack() {
 		if (!isFirstStep()) {
-                        mPreviousPosition = getCurrentStepPosition();
-                        mPreviousStep = getCurrentStep();
+			mPreviousPosition = getCurrentStepPosition();
+			mPreviousStep = getCurrentStep();
 			setCurrentStep(mPager.getCurrentItem() - 1);
 		}
 	}
@@ -298,3 +298,4 @@ public class Wizard implements Disposable, Subscriber {
         }
     }
 }
+
