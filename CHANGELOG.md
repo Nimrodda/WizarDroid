@@ -1,6 +1,9 @@
 Change Log
 ===============================================================================
 
+Fixed #66: WizardStep's onResume() method not working properly
+Fixed memory leaks in Wizard class
+
 Version 1.3.1 *(2015-03-23)*
 ----------------------------
 
