@@ -26,20 +26,20 @@ import org.codepond.wizardroid.persistence.ContextManagerImpl;
 public abstract class WizardFragment extends Fragment implements Wizard.WizardCallbacks {
 	private static final String TAG = WizardFragment.class.getSimpleName();
     private static final String STATE_WIZARD_CONTEXT = "ContextVariable";
-    private WizardFlow flow;
-    private ContextManager contextManager;
+    private WizardFlow mFlow;
+    private ContextManager mContextManager;
 
     protected Wizard wizard;
 
     public WizardFragment() {
-        this.contextManager = new ContextManagerImpl();
+        this.mContextManager = new ContextManagerImpl();
     }
 
     /**
      * @param contextManager {@link ContextManager}, responsible for persisting variable values between steps
      */
     public WizardFragment(ContextManager contextManager) {
-        this.contextManager = contextManager;
+        this.mContextManager = contextManager;
     }
 
     /**
@@ -64,8 +64,8 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.i(TAG, "Loading wizard data");
-        flow = onSetup();
-        if (flow == null) {
+        mFlow = onSetup();
+        if (mFlow == null) {
             throw new IllegalArgumentException("Error setting up the Wizard's flow. You must override WizardFragment#onSetup " +
                     "and use WizardFlow.Builder to create the Wizard's flow followed by WizardFragment#super.onSetup(flow)");
         }
@@ -75,27 +75,27 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            flow.loadFlow(savedInstanceState);
+            mFlow.loadFlow(savedInstanceState);
             //Load pre-saved wizard context
-            contextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
-			contextManager.loadStepContext(this);
+            mContextManager.setContext(savedInstanceState.getBundle(STATE_WIZARD_CONTEXT));
+			mContextManager.loadStepContext(this);
         }
         else {
             //Initialize wizard context
-            contextManager.setContext(new Bundle());
+            mContextManager.setContext(new Bundle());
 			//Persist hosting activity/fragment fields to wizard context enabling easy data transfer between
 			//wizard host and the steps
-			contextManager.persistStepContext(this);
+			mContextManager.persistStepContext(this);
         }
-        wizard = new Wizard(flow, contextManager, this, this.getActivity());
+        wizard = new Wizard(mFlow, mContextManager, this, getChildFragmentManager());
     }
 
     @Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-        flow.persistFlow(outState);
+        mFlow.persistFlow(outState);
         //Persist wizard context
-        outState.putBundle(STATE_WIZARD_CONTEXT, contextManager.getContext());
+        outState.putBundle(STATE_WIZARD_CONTEXT, mContextManager.getContext());
 	}
 
     /**
@@ -103,7 +103,7 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
      */
     @Override
     public void onWizardComplete() {
-        contextManager.loadStepContext(this);
+        mContextManager.loadStepContext(this);
     }
 
     /**

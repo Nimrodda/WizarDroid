@@ -41,39 +41,63 @@ public class Wizard implements Disposable, Subscriber {
 
 	private static final boolean DEBUG = false;
     private static final String TAG = Wizard.class.getSimpleName();
-	private final WizardFlow wizardFlow;
-    private final ContextManager contextManager;
-    private final WizardCallbacks callbacks;
-    private final ViewPager mPager;
-    private final FragmentManager mFragmentManager;
+	private WizardFlow mWizardFlow;
+    private ContextManager mContextManager;
+    private WizardCallbacks mCallbacks;
+    private ViewPager mPager;
+    private FragmentManager mFragmentManager;
     private int backStackEntryCount;
 	private WizardStep mPreviousStep;
 	private int mPreviousPosition;
 
 	/**
+     * @deprecated Please use {@link #Wizard(WizardFlow, ContextManager, WizardCallbacks, FragmentManager, ViewPager)} instead.
      * Constructor for Wizard
      * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
      * @param contextManager ContextManager instance would normally be {@link org.codepond.wizardroid.persistence.ContextManagerImpl}
      * @param callbacks implementation of WizardCallbacks
      * @param activity the hosting activity
      */
-	public Wizard(final WizardFlow wizardFlow,
+	@Deprecated
+    public Wizard(final WizardFlow wizardFlow,
                   final ContextManager contextManager,
                   final WizardCallbacks callbacks,
                   final FragmentActivity activity) {
-		this.wizardFlow = wizardFlow;
-        this.contextManager = contextManager;
-        this.callbacks = callbacks;
+		this.mWizardFlow = wizardFlow;
+        this.mContextManager = contextManager;
+        this.mCallbacks = callbacks;
         this.mPager = (ViewPager) activity.findViewById(R.id.step_container);
-        this.mFragmentManager = activity.getSupportFragmentManager();
-
         if (mPager == null) {
             throw new RuntimeException("Cannot initialize Wizard. View with ID: step_container not found!" +
                     " The hosting Activity/Fragment must have a ViewPager in its layout with ID: step_container");
         }
 
-        mPager.setAdapter(new WizardPagerAdapter(activity.getSupportFragmentManager()));
+        this.mFragmentManager = activity.getSupportFragmentManager();
 
+        init();
+        setViewPager(mPager);
+	}
+
+    /**
+     * Constructor for Wizard
+     * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
+     * @param contextManager ContextManager instance would normally be {@link org.codepond.wizardroid.persistence.ContextManagerImpl}
+     * @param callbacks implementation of WizardCallbacks
+     * @param fragmentManager instance of {@link FragmentManager}
+     */
+    public Wizard(WizardFlow wizardFlow,
+                  ContextManager contextManager,
+                  WizardCallbacks callbacks,
+                  FragmentManager fragmentManager) {
+        this.mWizardFlow = wizardFlow;
+        this.mContextManager = contextManager;
+        this.mCallbacks = callbacks;
+        this.mFragmentManager = fragmentManager;
+
+        init();
+    }
+
+    private void init() {
         backStackEntryCount = mFragmentManager.getBackStackEntryCount();
         mFragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
             @Override
@@ -86,6 +110,16 @@ public class Wizard implements Disposable, Subscriber {
                 }
             }
         });
+        Bus.getInstance().register(this, StepCompletedEvent.class);
+    }
+
+    /**
+     * Set the ViewPager in which the Wizard will load the steps into
+     * @param viewPager instance of ViewPager
+     */
+    public void setViewPager(ViewPager viewPager) {
+        mPager = viewPager;
+        mPager.setAdapter(new WizardPagerAdapter(mFragmentManager));
 
         //Implementation of OnPageChangeListener to handle wizard control via user finger slides
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -114,7 +148,7 @@ public class Wizard implements Disposable, Subscriber {
 						mPreviousStep = getCurrentStep();
 						break;
 					case ViewPager.SCROLL_STATE_SETTLING:
-						callbacks.onStepChanged();
+						mCallbacks.onStepChanged();
 						break;
 					case ViewPager.SCROLL_STATE_IDLE:
 						if (mPreviousState == ViewPager.SCROLL_STATE_SETTLING) {
@@ -133,12 +167,16 @@ public class Wizard implements Disposable, Subscriber {
 				mPreviousState = state;
             }
         });
-        Bus.getInstance().register(this, StepCompletedEvent.class);
-	}
+    }
 
     @Override
     public void dispose() {
         Bus.getInstance().unregister(this);
+        mPager = null;
+        mWizardFlow = null;
+        mFragmentManager = null;
+        mContextManager = null;
+        mCallbacks = null;
     }
 
     @Override
@@ -153,18 +191,18 @@ public class Wizard implements Disposable, Subscriber {
 
 
         // Check that the step is not already in this state to avoid spamming the viewpager
-        if (wizardFlow.isStepCompleted(stepPosition) != isComplete) {
-            wizardFlow.setStepCompleted(stepPosition, isComplete);
+        if (mWizardFlow.isStepCompleted(stepPosition) != isComplete) {
+            mWizardFlow.setStepCompleted(stepPosition, isComplete);
             mPager.getAdapter().notifyDataSetChanged();
             //Refresh the UI
-            callbacks.onStepChanged();
+            mCallbacks.onStepChanged();
         }
     }
 
 	private void processStepBeforeChange(WizardStep step, int position) {
 		step.onExit(WizardStep.EXIT_NEXT);
-		wizardFlow.setStepCompleted(position, true);
-		contextManager.persistStepContext(step);
+		mWizardFlow.setStepCompleted(position, true);
+		mContextManager.persistStepContext(step);
 	}
 
     /**
@@ -174,7 +212,7 @@ public class Wizard implements Disposable, Subscriber {
 		if (canGoNext()) {
 			if (isLastStep()) {
 				processStepBeforeChange(getCurrentStep(), getCurrentStepPosition());
-				callbacks.onWizardComplete();
+				mCallbacks.onWizardComplete();
 			}
 			else {
 				mPreviousPosition = getCurrentStepPosition();
@@ -224,7 +262,7 @@ public class Wizard implements Disposable, Subscriber {
 	 * @return boolean representing the result of the check
 	 */
     public boolean isLastStep() {
-		return mPager.getCurrentItem() == wizardFlow.getStepsCount() - 1;
+		return mPager.getCurrentItem() == mWizardFlow.getStepsCount() - 1;
 	}
 	
 	/**
@@ -241,8 +279,8 @@ public class Wizard implements Disposable, Subscriber {
      */
     public boolean canGoNext() {
         int stepPosition = getCurrentStepPosition();
-        if (wizardFlow.isStepRequired(stepPosition)) {
-            return wizardFlow.isStepCompleted(stepPosition);
+        if (mWizardFlow.isStepRequired(stepPosition)) {
+            return mWizardFlow.isStepCompleted(stepPosition);
         }
         return true;
     }
@@ -261,8 +299,8 @@ public class Wizard implements Disposable, Subscriber {
         @Override
         public Fragment getItem(int i) {
             try {
-                WizardStep step = wizardFlow.getSteps().get(i).newInstance();
-                contextManager.loadStepContext(step);
+                WizardStep step = mWizardFlow.getSteps().get(i).newInstance();
+                mContextManager.loadStepContext(step);
                 return step;
             } catch (InstantiationException e) {
                 e.printStackTrace();
@@ -290,7 +328,7 @@ public class Wizard implements Disposable, Subscriber {
 
         @Override
         public int getCount() {
-            return wizardFlow.getSteps().size();
+            return mWizardFlow.getSteps().size();
         }
 
         public WizardStep getPrimaryItem() {

@@ -1,6 +1,7 @@
 package org.codepond.wizardroid.layouts;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.Button;
@@ -23,12 +24,13 @@ import org.codepond.wizardroid.persistence.ContextManager;
  */
 public abstract class BasicWizardLayout extends WizardFragment implements View.OnClickListener {
 
-    private Button nextButton;
-    private Button previousButton;
+    private Button mNextButton;
+    private Button mPreviousButton;
 
-    private String nextButtonText;
-    private String finishButtonText;
-    private String backButtonText;
+    private String mNextButtonText;
+    private String mFinishButtonText;
+    private String mBackButtonText;
+    private ViewPager mViewPager;
 
     /**
      * Empty constructor for Fragment
@@ -49,13 +51,13 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View wizardLayout = inflater.inflate(R.layout.wizardroid_basic_wizard, container, false);
-        nextButton = (Button) wizardLayout.findViewById(R.id.wizard_next_button);
-        nextButton.setOnClickListener(this);
-        nextButton.setText(getNextButtonLabel());
-        previousButton = (Button) wizardLayout.findViewById(R.id.wizard_previous_button);
-        previousButton.setOnClickListener(this);
-        previousButton.setText(getBackButtonLabel());
-
+        mNextButton = (Button) wizardLayout.findViewById(R.id.wizard_next_button);
+        mNextButton.setOnClickListener(this);
+        mNextButton.setText(getNextButtonLabel());
+        mPreviousButton = (Button) wizardLayout.findViewById(R.id.wizard_previous_button);
+        mPreviousButton.setOnClickListener(this);
+        mPreviousButton.setText(getBackButtonLabel());
+        mViewPager = (ViewPager) wizardLayout.findViewById(R.id.step_container);
         return wizardLayout;
     }
 
@@ -63,6 +65,12 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     public void onResume() {
         super.onResume();
         updateWizardControls();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        wizard.setViewPager(mViewPager);
     }
 
     /**
@@ -108,14 +116,14 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      */
     private void updateWizardControls() {
         //Disable the back button in the first step
-        previousButton.setEnabled(!wizard.isFirstStep());
+        mPreviousButton.setEnabled(!wizard.isFirstStep());
 
-        previousButton.setText(getBackButtonLabel());
+        mPreviousButton.setText(getBackButtonLabel());
         //Disable the next button if the step is marked as 'required' and is incomplete
-        nextButton.setEnabled(wizard.canGoNext());
+        mNextButton.setEnabled(wizard.canGoNext());
 
         //Set different next button label based on the wizard position
-        nextButton.setText(wizard.isLastStep()
+        mNextButton.setText(wizard.isLastStep()
                 ? getFinishButtonText()
                 : getNextButtonLabel());
     }
@@ -125,7 +133,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * @return Default label 'Next' or user defined label
      */
     public String getNextButtonLabel() {
-        return TextUtils.isEmpty(nextButtonText) ? getResources().getString(R.string.action_next) : nextButtonText;
+        return TextUtils.isEmpty(mNextButtonText) ? getResources().getString(R.string.action_next) : mNextButtonText;
     }
 
     /**
@@ -133,7 +141,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * @param nextButtonText Label for the Next button
      */
     public void setNextButtonText(String nextButtonText) {
-        this.nextButtonText = nextButtonText;
+        this.mNextButtonText = nextButtonText;
     }
 
     /**
@@ -141,7 +149,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * @return Default label 'Finish' or user defined label
      */
     public String getFinishButtonText() {
-        return TextUtils.isEmpty(finishButtonText) ? getResources().getString(R.string.action_finish) : finishButtonText;
+        return TextUtils.isEmpty(mFinishButtonText) ? getResources().getString(R.string.action_finish) : mFinishButtonText;
     }
 
     /**
@@ -149,7 +157,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * @param finishButtonText    Label for the Finish button
      */
     public void setFinishButtonText(String finishButtonText) {
-        this.finishButtonText = finishButtonText;
+        this.mFinishButtonText = finishButtonText;
     }
 
     /**
@@ -157,7 +165,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * @return Default label 'Back' or user defined label
      */
     public String getBackButtonLabel() {
-        return TextUtils.isEmpty(backButtonText) ? getResources().getString(R.string.action_previous) : backButtonText;
+        return TextUtils.isEmpty(mBackButtonText) ? getResources().getString(R.string.action_previous) : mBackButtonText;
     }
 
     /**
@@ -165,6 +173,6 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
      * @param backButtonText Label for the Back button
      */
     public void setBackButtonText(String backButtonText) {
-        this.backButtonText = backButtonText;
+        this.mBackButtonText = backButtonText;
     }
 }
