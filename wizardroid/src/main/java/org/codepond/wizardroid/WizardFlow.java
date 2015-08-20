@@ -15,26 +15,26 @@ public class WizardFlow {
      * as part of the wizard flow.
      */
     public static class StepMetaData {
-        private boolean completed;
-        private boolean required;
+        private boolean mCompleted;
+        private boolean mRequired;
 
         private Class<? extends WizardStep> stepClass;
 
         private StepMetaData(boolean isRequired, Class<? extends WizardStep> stepClass) {
-            this.required = isRequired;
+            this.mRequired = isRequired;
             this.stepClass = stepClass;
         }
 
         public boolean isRequired() {
-            return required;
+            return mRequired;
         }
 
         public boolean isCompleted() {
-            return completed;
+            return mCompleted;
         }
 
         public void setCompleted(boolean completed) {
-            this.completed = completed;
+            this.mCompleted = completed;
         }
 
         public Class<? extends WizardStep> getStepClass() {
@@ -43,10 +43,10 @@ public class WizardFlow {
 
     }
 
-    private final List<StepMetaData> steps;
+    private final List<StepMetaData> mSteps;
 
 	private WizardFlow(List<StepMetaData> steps) {
-		this.steps = steps;
+		this.mSteps = steps;
 	}
 
     /**
@@ -58,7 +58,7 @@ public class WizardFlow {
         List<Class<? extends WizardStep>> cutOffFlow = new ArrayList<Class<? extends WizardStep>>();
 
         //Calculate the cut off step by finding the last step which is required and incomplete
-        for (StepMetaData stepMetaData : this.steps) {
+        for (StepMetaData stepMetaData : this.mSteps) {
             cutOffFlow.add(stepMetaData.getStepClass());
             if (!stepMetaData.isCompleted() && stepMetaData.isRequired()) break;
         }
@@ -70,7 +70,7 @@ public class WizardFlow {
      * @param stepPosition the position of the step to be checked
      */
     public boolean isStepRequired(int stepPosition) {
-        StepMetaData meta = steps.get(stepPosition);
+        StepMetaData meta = mSteps.get(stepPosition);
         return meta.isRequired();
     }
 
@@ -79,7 +79,7 @@ public class WizardFlow {
      * @param stepPosition the position of the step to be checked
      */
     public boolean isStepCompleted(int stepPosition) {
-        StepMetaData meta = steps.get(stepPosition);
+        StepMetaData meta = mSteps.get(stepPosition);
         return meta.isCompleted();
     }
 
@@ -87,7 +87,7 @@ public class WizardFlow {
      * Get the total amount of steps in the flow
      */
     public int getStepsCount() {
-        return this.steps.size();
+        return this.mSteps.size();
     }
 
     /**
@@ -96,19 +96,19 @@ public class WizardFlow {
      * @param stepCompleted true for complete, false for incomplete
      */
     public void setStepCompleted(int stepPosition, boolean stepCompleted) {
-        steps.get(stepPosition).setCompleted(stepCompleted);
+        mSteps.get(stepPosition).setCompleted(stepCompleted);
     }
 
     final void persistFlow(Bundle state) {
-        for (StepMetaData stepMetaData : steps) {
-            state.putBoolean(stepMetaData.getStepClass().getSimpleName() + steps.indexOf(stepMetaData), stepMetaData.isCompleted());
+        for (StepMetaData stepMetaData : mSteps) {
+            state.putBoolean(stepMetaData.getStepClass().getSimpleName() + mSteps.indexOf(stepMetaData), stepMetaData.isCompleted());
         }
     }
 
     final void loadFlow(Bundle state) {
-        for (StepMetaData stepMetaData : steps) {
+        for (StepMetaData stepMetaData : mSteps) {
             stepMetaData.setCompleted(
-                    state.getBoolean(stepMetaData.getStepClass().getSimpleName() + steps.indexOf(stepMetaData),
+                    state.getBoolean(stepMetaData.getStepClass().getSimpleName() + mSteps.indexOf(stepMetaData),
                             stepMetaData.isCompleted()));
         }
     }
@@ -120,13 +120,13 @@ public class WizardFlow {
 	 */
 	public static class Builder {
 
-        private List<StepMetaData> wizardSteps;
+        private List<StepMetaData> mWizardSteps;
 
         /**
 		 * Construct a WizardFlow.Builder
 		 */
 		public Builder() {
-			wizardSteps = new ArrayList<StepMetaData>();
+			mWizardSteps = new ArrayList<StepMetaData>();
 		}
 		
 		/**
@@ -148,7 +148,7 @@ public class WizardFlow {
          * @return Builder for creating a wizard flow
          */
         public Builder addStep(Class<? extends WizardStep> stepClass, boolean isRequired) {
-            wizardSteps.add(new StepMetaData(isRequired, stepClass));
+            mWizardSteps.add(new StepMetaData(isRequired, stepClass));
             return this;
         }
 
@@ -157,8 +157,8 @@ public class WizardFlow {
 		 * @return WizardFlow Instance of WizardFlow
 		 */
 		public WizardFlow create() {
-			if (wizardSteps.size() > 0) {
-				return new WizardFlow(wizardSteps);
+			if (mWizardSteps.size() > 0) {
+				return new WizardFlow(mWizardSteps);
 			}
 			else {
 				throw new RuntimeException("Cannot create WizardFlow. No step has been added! Call Builder#addStep(stepClass) to add steps to the wizard flow.");

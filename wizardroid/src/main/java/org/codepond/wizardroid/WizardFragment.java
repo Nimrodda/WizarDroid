@@ -114,6 +114,6 @@ public abstract class WizardFragment extends Fragment implements Wizard.WizardCa
     @Override
     public void onDetach() {
         super.onDetach();
-        wizard.dispose();
+        wizard.close();
     }
 }

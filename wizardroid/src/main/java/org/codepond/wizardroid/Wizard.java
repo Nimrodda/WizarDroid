@@ -10,10 +10,11 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 import org.codepond.wizardroid.infrastructure.Bus;
-import org.codepond.wizardroid.infrastructure.Disposable;
 import org.codepond.wizardroid.infrastructure.Subscriber;
 import org.codepond.wizardroid.infrastructure.events.StepCompletedEvent;
 import org.codepond.wizardroid.persistence.ContextManager;
+
+import java.io.Closeable;
 
 /**
  * The engine of the Wizard. This class controls the flow of the wizard
@@ -22,21 +23,21 @@ import org.codepond.wizardroid.persistence.ContextManager;
  * via {@link org.codepond.wizardroid.WizardFragment#wizard} field. Use this
  * class only if you wish to create a custom WizardFragment to control the wizard.
  */
-public class Wizard implements Disposable, Subscriber {
+public class Wizard implements Closeable, Subscriber {
 	/**
      * Interface for key wizard events. Implement this interface if you wish to create
      * a custom WizardFragment.
      */
-    public static interface WizardCallbacks {
+    public interface WizardCallbacks {
         /**
          * Event called when the wizard is completed
          */
-        public void onWizardComplete();
+        void onWizardComplete();
 
         /**
          * Event called after a step was changed
          */
-        public void onStepChanged();
+        void onStepChanged();
     }
 
 	private static final boolean DEBUG = false;
@@ -51,7 +52,7 @@ public class Wizard implements Disposable, Subscriber {
 	private int mPreviousPosition;
 
 	/**
-     * @deprecated Please use {@link #Wizard(WizardFlow, ContextManager, WizardCallbacks, FragmentManager, ViewPager)} instead.
+     * @deprecated Please use {@link #Wizard(WizardFlow, ContextManager, WizardCallbacks, FragmentManager)} instead.
      * Constructor for Wizard
      * @param wizardFlow WizardFlow instance. See WizardFlow.Builder for more information on creating WizardFlow objects.
      * @param contextManager ContextManager instance would normally be {@link org.codepond.wizardroid.persistence.ContextManagerImpl}
@@ -170,7 +171,7 @@ public class Wizard implements Disposable, Subscriber {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         Bus.getInstance().unregister(this);
         mPager = null;
         mWizardFlow = null;
