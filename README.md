@@ -17,7 +17,7 @@ Use with Gradle
 ---------------
 
     dependencies {
-        compile 'org.codepond:wizardroid:1.3.0'
+        compile 'org.codepond:wizardroid:1.3.1'
     }
 
 Contribute
