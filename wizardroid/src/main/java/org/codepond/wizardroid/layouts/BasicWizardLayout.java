@@ -1,7 +1,7 @@
 package org.codepond.wizardroid.layouts;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import org.codepond.wizardroid.layouts.CustomViewPager;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.Button;
@@ -30,7 +30,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     private String mNextButtonText;
     private String mFinishButtonText;
     private String mBackButtonText;
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
 
     /**
      * Empty constructor for Fragment
@@ -43,6 +43,14 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
 	public BasicWizardLayout(ContextManager contextManager) {
 		super(contextManager);
 	}
+
+    public boolean isSwipeEnabled() {
+        return mViewPager.isSwipeEnabled();
+    }
+
+    public void setSwipeEnabled(boolean swipeEnabled) {
+        mViewPager.setSwipeEnabled(swipeEnabled);
+    }
 
 	/**
      * Setting the layout for this basic wizard layout and hooking up wizard controls to their
@@ -57,7 +65,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         mPreviousButton = (Button) wizardLayout.findViewById(R.id.wizard_previous_button);
         mPreviousButton.setOnClickListener(this);
         mPreviousButton.setText(getBackButtonLabel());
-        mViewPager = (ViewPager) wizardLayout.findViewById(R.id.step_container);
+        mViewPager = (CustomViewPager) wizardLayout.findViewById(R.id.step_container);
         return wizardLayout;
     }
 

@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import org.codepond.wizardroid.layouts.CustomViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 
@@ -45,7 +45,7 @@ public class Wizard implements Closeable, Subscriber {
 	private WizardFlow mWizardFlow;
     private ContextManager mContextManager;
     private WizardCallbacks mCallbacks;
-    private ViewPager mPager;
+    private CustomViewPager mPager;
     private FragmentManager mFragmentManager;
     private int backStackEntryCount;
 	private WizardStep mPreviousStep;
@@ -67,7 +67,7 @@ public class Wizard implements Closeable, Subscriber {
 		this.mWizardFlow = wizardFlow;
         this.mContextManager = contextManager;
         this.mCallbacks = callbacks;
-        this.mPager = (ViewPager) activity.findViewById(R.id.step_container);
+        this.mPager = (CustomViewPager) activity.findViewById(R.id.step_container);
         if (mPager == null) {
             throw new RuntimeException("Cannot initialize Wizard. View with ID: step_container not found!" +
                     " The hosting Activity/Fragment must have a ViewPager in its layout with ID: step_container");
@@ -118,13 +118,13 @@ public class Wizard implements Closeable, Subscriber {
      * Set the ViewPager in which the Wizard will load the steps into
      * @param viewPager instance of ViewPager
      */
-    public void setViewPager(ViewPager viewPager) {
+    public void setViewPager(CustomViewPager viewPager) {
         mPager = viewPager;
         mPager.setAdapter(new WizardPagerAdapter(mFragmentManager));
 
         //Implementation of OnPageChangeListener to handle wizard control via user finger slides
-        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			private int mPreviousState = ViewPager.SCROLL_STATE_IDLE;
+        mPager.setOnPageChangeListener(new CustomViewPager.OnPageChangeListener() {
+			private int mPreviousState = CustomViewPager.SCROLL_STATE_IDLE;
 
 			@Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -144,15 +144,15 @@ public class Wizard implements Closeable, Subscriber {
             public void onPageScrollStateChanged(int state) {
 				if (DEBUG) Log.v(TAG, "onPageScrollStateChanged " + state);
 				switch (state) {
-					case ViewPager.SCROLL_STATE_DRAGGING:
+					case CustomViewPager.SCROLL_STATE_DRAGGING:
 						mPreviousPosition = getCurrentStepPosition();
 						mPreviousStep = getCurrentStep();
 						break;
-					case ViewPager.SCROLL_STATE_SETTLING:
+					case CustomViewPager.SCROLL_STATE_SETTLING:
 						mCallbacks.onStepChanged();
 						break;
-					case ViewPager.SCROLL_STATE_IDLE:
-						if (mPreviousState == ViewPager.SCROLL_STATE_SETTLING) {
+					case CustomViewPager.SCROLL_STATE_IDLE:
+						if (mPreviousState == CustomViewPager.SCROLL_STATE_SETTLING) {
 							if (getCurrentStepPosition() > mPreviousPosition) {
 								if (DEBUG) Log.v(TAG, "goNext");
 								processStepBeforeChange(mPreviousStep, mPreviousPosition);
