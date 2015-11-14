@@ -31,7 +31,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     private String mFinishButtonText;
     private String mBackButtonText;
 
-    private boolean mViewPagerSwipeEnabled;
+    private boolean mViewPagerSwipeEnabled = true; //default value
     private CustomViewPager mViewPager;
 
     /**
