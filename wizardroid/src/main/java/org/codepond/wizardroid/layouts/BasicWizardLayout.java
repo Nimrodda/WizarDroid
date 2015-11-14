@@ -30,6 +30,8 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
     private String mNextButtonText;
     private String mFinishButtonText;
     private String mBackButtonText;
+
+    private boolean mViewPagerSwipeEnabled;
     private CustomViewPager mViewPager;
 
     /**
@@ -45,11 +47,11 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
 	}
 
     public boolean isSwipeEnabled() {
-        return mViewPager.isSwipeEnabled();
+        return mViewPagerSwipeEnabled;
     }
 
     public void setSwipeEnabled(boolean swipeEnabled) {
-        mViewPager.setSwipeEnabled(swipeEnabled);
+        mViewPagerSwipeEnabled = swipeEnabled;
     }
 
 	/**
@@ -66,6 +68,7 @@ public abstract class BasicWizardLayout extends WizardFragment implements View.O
         mPreviousButton.setOnClickListener(this);
         mPreviousButton.setText(getBackButtonLabel());
         mViewPager = (CustomViewPager) wizardLayout.findViewById(R.id.step_container);
+        mViewPager.setSwipeEnabled(isSwipeEnabled());
         return wizardLayout;
     }
 
