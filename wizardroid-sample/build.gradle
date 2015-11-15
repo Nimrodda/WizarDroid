@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode project.ext.versionCode
         versionName version
     }
@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v4:23.0.0'
     compile project(':wizardroid')
 
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
