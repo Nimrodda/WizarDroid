@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_previous">Vorige</string>
+    <string name="action_next">Volgende</string>
+    <string name="action_finish">Voltooien</string>
+</resources>
