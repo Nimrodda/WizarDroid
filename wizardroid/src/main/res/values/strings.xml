@@ -3,4 +3,17 @@
     <string name="action_previous">Back</string>
     <string name="action_next">Next</string>
     <string name="action_finish">Finish</string>
+
+    <!-- Support for AboutLibraries -->
+    <string name="define_wizardroid"/>
+    <string name="library_wizardroid_author">Nimrod Dayan</string>
+    <string name="library_wizardroid_authorWebsite">http://www.codepond.org/</string>
+    <string name="library_wizardroid_libraryName">WizarDroid</string>
+    <string name="library_wizardroid_libraryDescription">A lightweight Android library for creating step by step wizards</string>
+    <string name="library_wizardroid_libraryWebsite">http://nimrodda.github.io/WizarDroid/</string>
+    <string name="library_wizardroid_libraryVersion">1.3.1</string>
+    <string name="library_wizardroid_isOpenSource">true</string>
+    <string name="library_wizardroid_repositoryLink">https://github.com/Nimrodda/WizarDroid</string>
+    <string name="library_wizardroid_classPath">org.codepond.wizardroid</string>
+    <string name="library_wizardroid_licenseId">mit</string>
 </resources>
