@@ -14,7 +14,7 @@ allprojects {
     group = "org.codepond"
 
     ext {
-        versionCode = 8
+        versionCode = 103010
         supportLibVersion = '26.1.0'
         compileSdk = 26
         targetSdk = 26
