@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+if (System.getenv('TEAMCITY_VERSION')) {
+    apply from: 'publish.gradle'
+}
 
 android {
     compileSdkVersion compileSdk
@@ -12,27 +15,23 @@ android {
     }
 
     signingConfigs {
-	    release 
-	}
+        release {
+            if (project.hasProperty('keyStore')) {
+                println 'Generating a signed package.'
+                storeFile file(keyStore)
+                storePassword storePass
+                keyAlias alias
+                keyPassword keyPass
+            }
+        }
+    }
 
 	buildTypes {
 	    release {
-	        signingConfig signingConfigs.release
+            if (project.hasProperty('keyStore')) {
+                signingConfig signingConfigs.release
+            }
 	    }
-	}
-
-	if (project.hasProperty('keystoreFile') &&
-	        project.hasProperty('keystorePassword') &&
-	        project.hasProperty('keyPassword') &&
-	        project.hasProperty('keyAlias')) {
-	    android.signingConfigs.release.storeFile = file(keystoreFile)
-	    android.signingConfigs.release.storePassword = keystorePassword
-	    android.signingConfigs.release.keyPassword = keyPassword
-	    android.signingConfigs.release.keyAlias = keyAlias
-	} 
-
-	else {
-	    buildTypes.release.signingConfig = null
 	}
 }
 

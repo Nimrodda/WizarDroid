@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.github.triplet.gradle:play-publisher:1.2.0'
     }
 }
 
@@ -13,7 +14,7 @@ allprojects {
     group = "org.codepond"
 
     ext {
-        versionCode = 7
+        versionCode = 8
         supportLibVersion = '26.1.0'
         compileSdk = 26
         targetSdk = 26

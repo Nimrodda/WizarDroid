@@ -1,0 +1,17 @@
+apply plugin: 'com.github.triplet.play'
+
+android {
+    playAccountConfigs {
+        defaultAccountConfig {
+            jsonFile = file(playJsonPath)
+        }
+    }
+
+    defaultConfig {
+        playAccountConfig = playAccountConfigs.defaultAccountConfig
+    }
+}
+
+play {
+    track = 'alpha'
+}
