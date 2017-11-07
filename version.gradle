@@ -1,0 +1,69 @@
+def props = new Properties()
+def propsFile = file("version.properties")
+propsFile.withInputStream { stream ->
+    props.load(stream)
+    int versionCode = props['versionCode'].toInteger()
+    project.ext.set('versionCode', versionCode)
+    project.ext.set('versionName', getVersionName(props))
+}
+
+task incrementVersionCode {
+    description "Incremement the version code by one"
+    doLast {
+        def versionCode = ++props['versionCode']
+        props['versionCode'] = String.valueOf(versionCode)
+        props.store(propsFile.newWriter(), null)
+        project.ext.set('versionCode', versionCode)
+        print "Increased version code to ${project.versionCode}"
+    }
+}
+
+task incrementMajorVersion {
+    description "Increment major version"
+    doLast {
+        props['major'] = String.valueOf(++props['major'])
+        props['minor'] = '0'
+        props['hotfix'] = '0'
+        props.store(propsFile.newWriter(), null)
+        project.ext.set('versionName', getVersionName(props))
+        print "Increased major version to ${project.versionName}"
+    }
+}
+
+task incrementMinorVersion {
+    description "Increment minor version"
+    doLast {
+        props['minor'] = String.valueOf(++props['minor'])
+        props['hotfix'] = '0'
+        props.store(propsFile.newWriter(), null)
+        project.ext.set('versionName', getVersionName(props))
+        print "Increased minor version to ${project.versionName}"
+    }
+}
+
+task incrementHotfixVersion {
+    description "Increment hotfix version"
+    doLast {
+        props['hotfix'] = String.valueOf(++props['hotfix'])
+        props.store(propsFile.newWriter(), null)
+        project.ext.set('versionName', getVersionName(props))
+        print "Increased hotfix version to ${project.versionName}"
+    }
+}
+
+task commitVersionIncrease(type: Exec) {
+    commandLine 'git', 'commit', '-am', "Increased to version ${project.versionName} v${project.versionCode}"
+    doLast {
+        props.store(propsFile.newWriter(), null)
+        project.ext.set('versionCode', versionCode)
+        project.ext.set('versionName', getVersionName(props))
+        print "Increased to version ${project.versionName} v${project.versionCode}"
+    }
+}
+
+def getVersionName(props) {
+    int major = props['major'].toInteger()
+    int minor = props['minor'].toInteger()
+    int hotfix = props['hotfix'].toInteger()
+    return "$major.$minor.$hotfix"
+}

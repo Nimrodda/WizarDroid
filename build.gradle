@@ -1,3 +1,5 @@
+apply from: 'version.gradle'
+
 buildscript {
     repositories {
         jcenter()
@@ -14,7 +16,6 @@ allprojects {
     group = "org.codepond"
 
     ext {
-        versionCode = 103010
         supportLibVersion = '26.1.0'
         compileSdk = 26
         targetSdk = 26

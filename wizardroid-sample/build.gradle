@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion minSdk
         targetSdkVersion targetSdk
-        versionCode project.ext.versionCode
-        versionName version
+        versionCode project.versionCode
+        versionName project.versionName
     }
 
 	buildTypes {
