@@ -10,6 +10,21 @@ android {
     defaultConfig {
         playAccountConfig = playAccountConfigs.defaultAccountConfig
     }
+
+    signingConfigs {
+        release {
+            storeFile file(keyStore)
+            storePassword storePass
+            keyAlias alias
+            keyPassword keyPass
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 play {

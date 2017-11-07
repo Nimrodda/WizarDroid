@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-if (System.getenv('TEAMCITY_VERSION')) {
+ciOnly {
     apply from: 'publish.gradle'
 }
 
@@ -14,23 +14,10 @@ android {
         versionName version
     }
 
-    signingConfigs {
-        release {
-            if (project.hasProperty('keyStore')) {
-                println 'Generating a signed package.'
-                storeFile file(keyStore)
-                storePassword storePass
-                keyAlias alias
-                keyPassword keyPass
-            }
-        }
-    }
-
 	buildTypes {
 	    release {
-            if (project.hasProperty('keyStore')) {
-                signingConfig signingConfigs.release
-            }
+            minifyEnabled true
+            shrinkResources true
 	    }
 	}
 }

@@ -29,3 +29,9 @@ subprojects {
         google()
     }
 }
+
+def ciOnly(predicate) {
+    if (System.getenv('TEAMCITY_VERSION')) {
+        predicate()
+    }
+}
