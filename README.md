@@ -1,3 +1,8 @@
+Deprecated
+----------
+
+This library is not being developed anymore. I highly recommend that you check out [Android Architecture Components Navigation](https://developer.android.com/topic/libraries/architecture/navigation/) in combination with [ViewModels](https://developer.android.com/topic/libraries/architecture/viewmodel) to build a Wizard flow.
+
 Overview
 --------
 
